@@ -1,0 +1,28 @@
+{
+  "name": "placer",
+  "version": "0.0.0",
+  "description": "Place any element relative to any other element the way you define",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dfcreative/placer.git"
+  },
+  "keywords": [
+    "place",
+    "position",
+    "align",
+    "tooltip",
+    "dropdown",
+    "popup",
+    "popover"
+  ],
+  "author": "dfcreative",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dfcreative/placer/issues"
+  },
+  "homepage": "https://github.com/dfcreative/placer"
+}
