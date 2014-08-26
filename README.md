@@ -1,7 +1,3 @@
-Places any element relative to any other element the way you define.
-
-## Use
-
 You need browserify or alike to use placer.
 
 ```js
