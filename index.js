@@ -19,19 +19,19 @@ var defaults = {
 
 	//intensity of alignment
 	//left, center, right, top, bottom, 0..1
-	align: .5,
+	align: 0.5,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
 	avoid: undefined,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
 	within: window
-}
+};
 
 //set of position placers
 var placeBySide = {
 	center: function(el, rect){
-		var center = [(rect[1] + rect[0]) / 2, (rect[3] + rect[2]) / 2];
+		var center = [(rect[2] + rect[0]) / 2, (rect[3] + rect[1]) / 2];
 		var width = el.offsetWidth;
 		var height = el.offsetHeight;
 		el.style.top = (center[1] - height/2) + 'px';
@@ -51,9 +51,12 @@ var placeBySide = {
 	},
 
 	bottom: function(el, rect){
-
+		var width = el.offsetWidth;
+		var height = el.offsetHeight;
+		el.style.top = rect[3] + 'px';
+		el.style.left = rect[0] + 'px';
 	}
-}
+};
 
 
 //place element relative to the target on the side
@@ -63,17 +66,18 @@ function place(element, options){
 	//get target rect to align
 	var target = options.relativeTo || defaults.relativeTo;
 	var targetRect;
+
 	if (target === win) {
-		targetRect = [0, win.innerWidth, 0, win.innerHeight]
+		targetRect = [0, 0, win.innerWidth, win.innerHeight];
 	}
 	else if (target instanceof Element) {
 		var rect = target.getBoundingClientRect();
-		targetRect = [rect.left, rect.right, rect.top, rect.bottom]
+		targetRect = [rect.left, rect.top, rect.right, rect.bottom];
 	}
 	else if (typeof target === 'string'){
 		var targetEl = document.querySelector(target);
 		if (!targetEl) return false;
-		var rect
+		// var rect;
 	}
 
 	//align according to the position
