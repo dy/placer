@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/dfcreative/placer/issues"
   },
-  "homepage": "https://github.com/dfcreative/placer"
+  "homepage": "https://github.com/dfcreative/placer",
+  "dependencies": {
+    "mucss": "~0.1.1"
+  }
 }

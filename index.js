@@ -5,6 +5,8 @@
 
 module.exports = place;
 
+var css = require('mucss');
+
 var win = window;
 
 //default options
@@ -30,12 +32,14 @@ var defaults = {
 
 //set of position placers
 var placeBySide = {
-	center: function(el, rect){
+	center: function(placee, rect){
 		var center = [(rect[2] + rect[0]) / 2, (rect[3] + rect[1]) / 2];
-		var width = el.offsetWidth;
-		var height = el.offsetHeight;
-		el.style.top = (center[1] - height/2) + 'px';
-		el.style.left = (center[0] - width/2) + 'px';
+		var width = placee.offsetWidth;
+		var height = placee.offsetHeight;
+		css(placee, {
+			top: (center[1] - height/2),
+			left: (center[0] - width/2)
+		});
 	},
 
 	left: function(el, rect){
