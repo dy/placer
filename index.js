@@ -54,9 +54,9 @@ var placeBySide = {
 
 	},
 
-	bottom: function(el, rect){
-		var width = el.offsetWidth;
-		var height = el.offsetHeight;
+	bottom: function(placee, rect){
+		var width = placee.offsetWidth;
+		var height = placee.offsetHeight;
 		css(placee, {
 			left: rect[0],
 			top: rect[3]
