@@ -65,7 +65,15 @@ var placeBySide = {
 };
 
 
-//place element relative to the target on the side
+/**
+ * Place element relative to the target by the side & params passed.
+ *
+ * @param {Element} element An element to place
+ * @param {object} options Options object
+ *
+ * @return {Element} Placed element to chain calls
+ */
+
 function place(element, options){
 	options = options || {};
 
@@ -75,19 +83,29 @@ function place(element, options){
 
 	if (target === win) {
 		targetRect = [0, 0, win.innerWidth, win.innerHeight];
+
+		//fix the position
+		element.style.position = 'fixed';
 	}
 	else if (target instanceof Element) {
-		var rect = target.getBoundingClientRect();
+		var rect = css.offsets(target);
 		targetRect = [rect.left, rect.top, rect.right, rect.bottom];
+
+		//set the position as of the target
+		if (css.isFixed(target)) element.style.position = 'fixed';
+		else element.style.position = 'absolute';
 	}
 	else if (typeof target === 'string'){
 		var targetEl = document.querySelector(target);
 		if (!targetEl) return false;
 		// var rect;
+		//TODO
 	}
 
 	//align according to the position
 	var side = options.side || defaults.side;
 
 	placeBySide[side](element, targetRect);
+
+	return element;
 }
