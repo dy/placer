@@ -57,8 +57,10 @@ var placeBySide = {
 	bottom: function(el, rect){
 		var width = el.offsetWidth;
 		var height = el.offsetHeight;
-		el.style.top = rect[3] + 'px';
-		el.style.left = rect[0] + 'px';
+		css(placee, {
+			left: rect[0],
+			top: rect[3]
+		});
 	}
 };
 
@@ -88,8 +90,4 @@ function place(element, options){
 	var side = options.side || defaults.side;
 
 	placeBySide[side](element, targetRect);
-}
-
-function parseCSSValue(str){
-	return ~~str.slice(0,-2);
 }
