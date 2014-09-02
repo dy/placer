@@ -1,15 +1,18 @@
 /**
-* Placer
+* @module  placer
+*
 * Places any element relative to any other element the way you define
 */
-
 module.exports = place;
 
 var css = require('mucss');
 
 var win = window;
 
-//default options
+/**
+ * Default options
+ */
+
 var defaults = {
 	//source to align relatively to
 	//element/{x,y}/[x,y]/
@@ -30,7 +33,12 @@ var defaults = {
 	within: window
 };
 
-//set of position placers
+
+/**
+ * Set of position placers
+ * @enum {Function}
+ */
+
 var placeBySide = {
 	center: function(placee, rect){
 		var center = [(rect[2] + rect[0]) / 2, (rect[3] + rect[1]) / 2];
@@ -57,6 +65,7 @@ var placeBySide = {
 	bottom: function(placee, rect){
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
+
 		css(placee, {
 			left: rect[0],
 			top: rect[3]
@@ -71,7 +80,7 @@ var placeBySide = {
  * @param {Element} element An element to place
  * @param {object} options Options object
  *
- * @return {Element} Placed element to chain calls
+ * @return {boolean} The result of placement - whether placing succeeded
  */
 
 function place(element, options){
@@ -91,9 +100,6 @@ function place(element, options){
 		var rect = css.offsets(target);
 		targetRect = [rect.left, rect.top, rect.right, rect.bottom];
 
-		//set the position as of the target
-		if (css.isFixed(target)) element.style.position = 'fixed';
-		else element.style.position = 'absolute';
 	}
 	else if (typeof target === 'string'){
 		var targetEl = document.querySelector(target);
@@ -101,6 +107,10 @@ function place(element, options){
 		// var rect;
 		//TODO
 	}
+
+	//set the position as of the target
+	if (css.isFixed(target)) element.style.position = 'fixed';
+	else element.style.position = 'absolute';
 
 	//align according to the position
 	var side = options.side || defaults.side;
