@@ -75,9 +75,8 @@ var placeBySide = {
 		//body & html with position:static tend to set bottom:0 as a viewport bottom
 		//so take height for a vp height
 		if (parent === body || parent === root && win.getComputedStyle(parent).position === 'static') parentHeight = win.innerHeight;
-
 		css(placee, {
-			left: Math.max(Math.min(rect.left + rect.width*align, within.right - width), within.left),
+			left: Math.max(Math.min(rect.left + rect.width*align - width*align, within.right - width), within.left),
 			bottom: parentHeight - rect.top,
 			top: 'auto'
 		});
@@ -89,7 +88,7 @@ var placeBySide = {
 
 		css(placee, {
 			//clamp position by min/max
-			left: Math.max(Math.min(rect.left + rect.width*align, within.right - width), within.left),
+			left: Math.max(Math.min(rect.left + rect.width*align - width*align, within.right - width), within.left),
 			top: rect.bottom,
 			bottom: 'auto'
 		});
@@ -169,6 +168,8 @@ function getRect(target){
  */
 
 function getAlign(value){
+	if (!value) return 0;
+
 	if (type.isString(value)) {
 		switch (value) {
 			case 'left':
