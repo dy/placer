@@ -5,9 +5,10 @@
 */
 module.exports = place;
 
+var type = require('mutypes');
 var css = require('mucss');
 
-var win = window;
+var win = window, doc = document, root = doc.documentElement, body = doc.body;
 
 /**
  * Default options
@@ -22,9 +23,13 @@ var defaults = {
 	//t/r/b/l, 'center' ( === undefined),
 	side: 'center',
 
-	//intensity of alignment
-	//left, center, right, top, bottom, 0..1
-	align: 0.5,
+	/**
+	 * side to align: trbl/0..1
+	 *
+	 * @default  0
+	 * @type {(number|string)}
+	 */
+	align: 0,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
 	avoid: undefined,
@@ -37,16 +42,18 @@ var defaults = {
 /**
  * Set of position placers
  * @enum {Function}
+ * @param {Element} placee Element to place
+ * @param {object} rect Offsets rectangle (absolute position)
  */
 
 var placeBySide = {
-	center: function(placee, rect){
-		var center = [(rect[2] + rect[0]) / 2, (rect[3] + rect[1]) / 2];
+	center: function(placee, rect, within, align){
+		var center = [(rect.left + rect.right) *.5, (rect.bottom + rect.top) *.5];
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
 		css(placee, {
-			top: (center[1] - height/2),
-			left: (center[0] - width/2)
+			top: (center[1] - height*.5),
+			left: (center[0] - width*.5)
 		});
 	},
 
@@ -58,17 +65,33 @@ var placeBySide = {
 
 	},
 
-	top: function(el, rect){
+	top: function(placee, rect, within, align){
+		var width = placee.offsetWidth;
+		var height = placee.offsetHeight;
+		var parent = placee.offsetParent;
+		var parentHeight = parent.offsetHeight;
 
+		//get reliable parent height
+		//body & html with position:static tend to set bottom:0 as a viewport bottom
+		//so take height for a vp height
+		if (parent === body || parent === root && win.getComputedStyle(parent).position === 'static') parentHeight = win.innerHeight;
+
+		css(placee, {
+			left: Math.max(Math.min(rect.left + rect.width*align, within.right - width), within.left),
+			bottom: parentHeight - rect.top,
+			top: 'auto'
+		});
 	},
 
-	bottom: function(placee, rect){
+	bottom: function(placee, rect, within, align){
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
 
 		css(placee, {
-			left: rect[0],
-			top: rect[3]
+			//clamp position by min/max
+			left: Math.max(Math.min(rect.left + rect.width*align, within.right - width), within.left),
+			top: rect.bottom,
+			bottom: 'auto'
 		});
 	}
 };
@@ -86,36 +109,77 @@ var placeBySide = {
 function place(element, options){
 	options = options || {};
 
-	//get target rect to align
-	var target = options.relativeTo || defaults.relativeTo;
-	var targetRect;
+	var relativeTo = options.relativeTo || defaults.relativeTo;
+	var within = options.within || defaults.within;
+	var side = options.side || defaults.side;
+	var align = getAlign(options.align !== undefined ? options.align : defaults.align);
 
-	if (target === win) {
-		targetRect = [0, 0, win.innerWidth, win.innerHeight];
-
-		//fix the position
-		element.style.position = 'fixed';
-	}
-	else if (target instanceof Element) {
-		var rect = css.offsets(target);
-		targetRect = [rect.left, rect.top, rect.right, rect.bottom];
-
-	}
-	else if (typeof target === 'string'){
-		var targetEl = document.querySelector(target);
-		if (!targetEl) return false;
-		// var rect;
-		//TODO
-	}
 
 	//set the position as of the target
-	if (css.isFixed(target)) element.style.position = 'fixed';
+	if (css.isFixed(relativeTo)) element.style.position = 'fixed';
 	else element.style.position = 'absolute';
 
-	//align according to the position
-	var side = options.side || defaults.side;
 
-	placeBySide[side](element, targetRect);
+	//place according to the position
+	placeBySide[side](element,
+		getRect(relativeTo),
+		getRect(within), align);
+
 
 	return element;
+}
+
+
+/**
+ * Return offsets rectangle of an element
+ *
+ * @param {*} el Element, selector, window, document, rect, array
+ *
+ * @return {object} Offsets rectangle
+ */
+
+function getRect(target){
+	var rect;
+	if (target === win) {
+		rect = {
+			top: 0,
+			left: 0,
+			right: win.innerWidth,
+			bottom: win.innerHeight
+		};
+	}
+	else if (type.isElement(target)) {
+		rect = css.offsets(target);
+	}
+	else if (type.isString(target)){
+		var targetEl = document.querySelector(target);
+		if (!targetEl) throw Error('No element queried by `' + target + '`');
+
+		rect = css.offsets(targetEl);
+	}
+
+	return rect;
+}
+
+
+/**
+ * Alignment setter
+ *
+ * @param {string|number} value Convert any value passed to float 0..1
+ */
+
+function getAlign(value){
+	if (type.isString(value)) {
+		switch (value) {
+			case 'left':
+			case 'top':
+				return 0;
+			case 'right':
+			case 'bottom':
+				return 1;
+		}
+	}
+	var num = parseFloat(value);
+
+	return num !== undefined ? num : 0.5;
 }
