@@ -35,7 +35,7 @@ var defaults = {
 	avoid: undefined,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
-	within: window
+	within: undefined
 };
 
 
@@ -51,6 +51,7 @@ var placeBySide = {
 		var center = [(rect.left + rect.right) *.5, (rect.bottom + rect.top) *.5];
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
+
 		css(placee, {
 			top: (center[1] - height*.5),
 			left: (center[0] - width*.5)
@@ -115,7 +116,7 @@ function place(element, options){
 
 
 	//set the position as of the target
-	if (css.isFixed(relativeTo)) element.style.position = 'fixed';
+	if (relativeTo && css.isFixed(relativeTo)) element.style.position = 'fixed';
 	else element.style.position = 'absolute';
 
 
@@ -138,7 +139,7 @@ function place(element, options){
  */
 
 function getRect(target){
-	var rect;
+	var rect = target;
 	if (target === win) {
 		rect = {
 			top: 0,
@@ -150,7 +151,7 @@ function getRect(target){
 	else if (type.isElement(target)) {
 		rect = css.offsets(target);
 	}
-	else if (type.isString(target)){
+	else if (type.isString(target)) {
 		var targetEl = document.querySelector(target);
 		if (!targetEl) throw Error('No element queried by `' + target + '`');
 
