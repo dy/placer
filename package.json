@@ -1,6 +1,6 @@
 {
   "name": "placer",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Place any element relative to any other element the way you define",
   "main": "index.js",
   "scripts": {
