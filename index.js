@@ -5,6 +5,7 @@
 */
 module.exports = place;
 
+
 var type = require('mutypes');
 var css = require('mucss');
 
@@ -72,12 +73,11 @@ function place(element, options){
 
 
 	//set the position as of the target
-	if (css.isFixed(options.relativeTo)) {
+	if (type.isElement(options.relativeTo) && css.isFixed(options.relativeTo)) {
 		element.style.position = 'fixed';
 	}
 	else {
 		element.style.position = 'absolute';
-
 		//get proper win offsets
 		if (options.within === win) {
 			withinRect.top += win.pageYOffset;
@@ -97,6 +97,7 @@ function place(element, options){
 	// //if not - place centered
 	// if (requiredWidth > withinRect.width && requiredHeight > withinRect.height)
 	// 	placeBySide.center(element, relativeToRect, withinRect, options);
+
 
 	//else place according to the position
 	placeBySide[options.side](element, relativeToRect, withinRect, options);
@@ -152,7 +153,7 @@ var placeBySide = {
 
 		//get reliable parent width
 		var parent = placee.offsetParent;
-		var parentWidth = parent.offsetWidth;
+		var parentWidth = parent && parent.offsetWidth || 0;
 		if (parent === body || parent === root && win.getComputedStyle(parent).position === 'static') parentWidth = win.innerWidth;
 
 		//place left
@@ -222,7 +223,7 @@ var placeBySide = {
 
 		//place top
 		var parent = placee.offsetParent;
-		var parentHeight = parent.offsetHeight;
+		var parentHeight = parent && parent.offsetHeight || 0;
 
 		//get reliable parent height
 		//body & html with position:static tend to consider bottom:0 as a viewport bottom
@@ -284,21 +285,22 @@ var placeBySide = {
 function placeHorizontally(placee, target, within, opts){
 	var width = placee.offsetWidth;
 	var margins = css.margins(placee);
+
 	var desirableLeft = target.left + target.width*opts.align - width*opts.align;
 
-	//if too close to the within right - set right = 0
-	if (width + desirableLeft > within.right) {
-		css(placee, {
-			right: 0,
-			left: 'auto'
-		});
-	}
-	else {
+	if (within && width + desirableLeft < within.right) {
 		css(placee, {
 			left: Math.max(desirableLeft, within.left),
 			right: 'auto'
 		});
+		return;
 	}
+
+	//if too close to the within right - set right = 0
+	css(placee, {
+		right: 0,
+		left: 'auto'
+	});
 }
 
 
@@ -328,7 +330,8 @@ function placeVertically ( placee, target, within, opts ) {
 
 
 /**
- * Return offsets rectangle of an element
+ * Return offsets rectangle of an element/array/any target passed.
+ * I. e. normalize offsets rect
  *
  * @param {*} el Element, selector, window, document, rect, array
  *
@@ -356,6 +359,34 @@ function getRect(target){
 		if (!targetEl) throw Error('No element queried by `' + target + '`');
 
 		rect = css.offsets(targetEl);
+	}
+	else if (type.isArray(target)){
+		//[left, top]
+		if (target.length === 2){
+			return {
+				top: target[1],
+				left: target[0],
+				bottom: target[1],
+				right: target[0],
+				width: 0,
+				height: 0
+			};
+		}
+		//[left,top,right,bottom]
+		else if (target.length === 4){
+			return {
+				left: target[0],
+				top: target[1],
+				right: target[2],
+				bottom: target[3],
+				width: target[2] - target[0],
+				height: target[3] - target[1]
+			};
+		}
+	}
+	else if (type.isObject(target)){
+		if (target.width === undefined) target.width = target.right - target.left;
+		if (target.height === undefined) target.height = target.bottom - target.top;
 	}
 
 	return rect;
