@@ -25,7 +25,9 @@
 	.container{
 		background: white;
 		display: inline-block;
-		min-width: 220px;
+		width: 28%;
+		/*max-width: 240px;*/
+		/*min-width: 160px;*/
 		height: 200px;
 		margin: 3px 1px;
 		vertical-align: top;
@@ -38,6 +40,9 @@
 	.padding{
 		padding: 20px;
 		position: relative;
+	}
+	.container.padding{
+		line-height: 160px;
 	}
 	.padding:after{
 		content: '';
@@ -70,13 +75,13 @@
 </style>
 
 <script src="../node_modules/require-stub/index.js"></script>
+<!-- <script src="../node_modules/xxx/index.js"></script> -->
 <script src="../index.js" data-module-name="placer"></script>
 
 
-<h1>Defatult placing</h1>
+<h1>Simple position</h1>
 
 
-<!-- side: left -->
 <div class="container">
 	<div class="placee" side="left" align="top" title="align">top</div>
 	<div class="placer" title="side">left</div>
@@ -91,7 +96,7 @@
 </div>
 
 
-<!-- side: right -->
+
 <div class="container">
 	<div class="placee" side="right" align="top" title="align">top</div>
 	<div class="placer" title="side">right</div>
@@ -106,8 +111,8 @@
 </div>
 
 
-<!-- side: top -->
-<div class="container">
+
+<!-- <div class="container">
 	<div class="placee" side="top" align="left" title="align">left</div>
 	<div class="placer" title="side">top</div>
 </div>
@@ -121,7 +126,7 @@
 </div>
 
 
-<!-- side: bottom -->
+
 <div class="container">
 	<div class="placee" side="bottom" align="left" title="align">left</div>
 	<div class="placer" title="side">bottom</div>
@@ -133,13 +138,13 @@
 <div class="container">
 	<div class="placee" side="bottom" align="right" title="align">right</div>
 	<div class="placer" title="side">bottom</div>
-</div>
+</div> -->
 
 
 
-<h1>Within a container</h1>
+<h1>Restricting container</h1>
 
-<!-- side: left -->
+
 <div class="container padding">
 	<div class="placee" side="left" align="top" within="parent" title="align">top</div>
 	<div class="placer" title="side">left</div>
@@ -152,6 +157,35 @@
 	<div class="placee" side="left" align="bottom" within="parent" title="align">bottom</div>
 	<div class="placer" title="side">left</div>
 </div>
+
+
+<div class="container padding">
+	<div class="placee" side="right" align="top" within="parent" title="align">top</div>
+	<div class="placer" title="side">right</div>
+</div>
+<div class="container padding">
+	<div class="placee" side="right" align="middle" within="parent" title="align">middle</div>
+	<div class="placer" title="side">right</div>
+</div>
+<div class="container padding">
+	<div class="placee" side="right" align="bottom" within="parent" title="align">bottom</div>
+	<div class="placer" title="side">right</div>
+</div>
+
+
+<!-- <div class="container padding">
+	<div class="placee" side="top" align="left" within="parent" title="align">left</div>
+	<div class="placer" title="side">top</div>
+</div>
+<div class="container padding">
+	<div class="placee" side="top" align="center" within="parent" title="align">center</div>
+	<div class="placer" title="side">top</div>
+</div>
+<div class="container padding">
+	<div class="placee" side="top" align="right" within="parent" title="align">right</div>
+	<div class="placer" title="side">top</div>
+</div> -->
+
 
 
 <script>

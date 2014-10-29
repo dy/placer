@@ -8,6 +8,7 @@ module.exports = place;
 
 var type = require('mutypes');
 var css = require('mucss');
+var qEl = require('tiny-element');
 
 
 //shortcuts
@@ -53,32 +54,38 @@ var defaults = {
  * @return {boolean} The result of placement - whether placing succeeded
  */
 function place(element, options){
+	//ensure element
+	element = getElement(element);
+
+	//inherit defaults
 	options = softExtend(options, defaults);
 
-	//recalc align
+	//numerize align
 	options.align = getAlign(options.align);
 
-	//calc within container
-	var withinRect = getRect(options.within);
+	//ensure elements
+	options.relativeTo = getElement(options.relativeTo, element);
+	options.within = getElement(options.within, element);
 
-	//set the position as of the target
+
+	//set the same position as the target’s one
+	var isAbsolute = false;
 	if (type.isElement(options.relativeTo) && css.isFixed(options.relativeTo)) {
 		element.style.position = 'fixed';
 	}
 	else {
 		element.style.position = 'absolute';
-		//correct win offsets in case of absolute placement
-		if (options.within === win) {
-			withinRect.top += win.pageYOffset;
-			withinRect.bottom += win.pageYOffset;
-			withinRect.left += win.pageXOffset;
-			withinRect.right += win.pageXOffset;
-		}
+		isAbsolute = true;
 	}
 
-	//placer rect afterwards (its rect may have changed due to position change)
-	var relativeToRect = getRect(options.relativeTo);
-
+	//FIXME: take this into account.
+	//correct win offsets in case of absolute placement
+	if (isAbsolute && options.within === win) {
+		withinRect.top += win.pageYOffset;
+		withinRect.bottom += win.pageYOffset;
+		withinRect.left += win.pageXOffset;
+		withinRect.right += win.pageXOffset;
+	}
 
 	//check whether there’s enough place (avoid placing redirection loop)
 	// var margins = css.margins(element);
@@ -92,7 +99,7 @@ function place(element, options){
 
 
 	//else place according to the position
-	placeBySide[options.side](element, relativeToRect, withinRect, options);
+	placeBySide[options.side](element, options);
 
 
 	return element;
@@ -107,7 +114,7 @@ function place(element, options){
  * @param {object} ignore Sides to avoid entering (usually, already tried)
  */
 var placeBySide = {
-	center: function(placee, placerRect, within, opts){
+	center: function(placee, opts){
 		// console.log('place center');
 
 		var center = [(placerRect.left + placerRect.right) *.5, (placerRect.bottom + placerRect.top) *.5];
@@ -123,11 +130,13 @@ var placeBySide = {
 		opts.side = 'center';
 	},
 
-	left: function(placee, placerRect, within, opts){
+	left: function(placee, opts){
 		// console.log('place left')
 
-		var width = placee.offsetWidth;
-		var height = placee.offsetHeight;
+		//get relativeTo & within rectangles
+		var placerRect = getRect(opts.relativeTo);
+		var withinRect = getRect(opts.within);
+		var parentRect = getRect(placee.offsetParent);
 
 		//check if there is enough place for placing from the left
 		// if (width > Math.abs(within.left - placerRect.left)) {
@@ -141,30 +150,31 @@ var placeBySide = {
 		// 	}
 		// }
 
+		var paddings = css.paddings(placee.offsetParent);
 
-		//get reliable parent width
-		var parent = placee.offsetParent;
-		var parentWidth = parent && parent.offsetWidth || 0;
-		if (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') parentWidth = win.innerWidth;
+		//place left (set right minding that placee witdth may change)
 
-		//place left
 		css(placee, {
-			right: parentWidth - placerRect.left - 18,
+			right: parentRect.width - placerRect.left + (hasScrollY() ? css.scrollbar : 0) + parentRect.left - paddings.left,
 			left: 'auto'
 		});
 
 		//place vertically properly
-		placeVertically.apply(this, arguments);
+		placeVertically(placee, placerRect, withinRect, parentRect, opts);
 
 		//upd options
 		opts.side = 'left';
 	},
 
-	right: function(placee, placerRect, within, opts){
+	right: function(placee, opts){
 		// console.log('place right')
 
-		var width = placee.offsetWidth;
-		var height = placee.offsetHeight;
+
+		//get relativeTo & within rectangles
+		var placerRect = getRect(opts.relativeTo);
+		var withinRect = getRect(opts.within);
+		var parentRect = getRect(placee.offsetParent);
+
 
 		//check if there is enough place for placing bottom
 		// if (width > Math.abs(within.right - placerRect.right)) {
@@ -178,24 +188,27 @@ var placeBySide = {
 		// 	}
 		// }
 
+
 		//place right
 		css(placee, {
-			left: placerRect.right,
+			left: placerRect.right - parentRect.left,
 			right: 'auto',
 		});
 
 		//place vertically properly
-		placeVertically.apply(this, arguments);
+		placeVertically(placee, placerRect, withinRect, parentRect, opts);
 
 		//upd options
 		opts.side = 'right';
 	},
 
-	top: function(placee, placerRect, within, opts){
+	top: function(placee, opts){
 		// console.log('place top');
 
-		var width = placee.offsetWidth;
-		var height = placee.offsetHeight;
+		//get relativeTo & within rectangles
+		var placerRect = getRect(opts.relativeTo);
+		var withinRect = getRect(opts.within);
+		var parentRect = getRect(placee.offsetParent);
 
 		//check if there is enough place for placing top
 		// if (height > Math.abs(within.top - placerRect.top)) {
@@ -209,27 +222,22 @@ var placeBySide = {
 		// 	}
 		// }
 
-		//place horizontally properly
-		placeHorizontally.apply(this, arguments);
+		//place vertically properly
+		placeVertically(placee, placerRect, withinRect, parentRect, opts);
 
 
 		//place vertically top-side
-		var bottom = getParentHeight(placee) - placerRect.top;
+		var bottom = getParentHeight(placee) - placerRect.top - hasScrollX() ? css.scrollbar : 0;
 		css(placee, {
 			bottom: bottom,
 			top: 'auto'
 		});
 
-		//check whether bottom scrollbar needs to be subtracted
-		if (hasScrollbarX()){
-			css(placee, 'bottom', bottom - css.scrollbar);
-		}
-
 		//upd options
 		opts.side = 'top';
 	},
 
-	bottom: function(placee, placerRect, within, opts){
+	bottom: function(placee, opts){
 		// console.log('place bottom');
 
 		var height = placee.offsetHeight;
@@ -271,20 +279,20 @@ var placeBySide = {
 /**
  * Horizontal placer for the top and bottom sides
  */
-function placeHorizontally ( placee, placerRect, within, opts ){
+function placeHorizontally ( placee, placerRect, withinRect, parentRect, opts ){
 	var width = placee.offsetWidth;
 	var margins = css.margins(placee);
 	var desirableLeft = placerRect.left + placerRect.width*opts.align - width*opts.align;
 
-	//if within is defined - mind right border
-	if (within) {
-		if (width + desirableLeft < within.right){
+	//if withinRect is defined - mind right border
+	if (withinRect) {
+		if (width + desirableLeft < withinRect.right){
 			css(placee, {
-				left: Math.max(desirableLeft, within.left),
+				left: Math.max(desirableLeft, withinRect.left),
 				right: 'auto'
 			});
 		}
-		//if too close to the within right - set right = 0
+		//if too close to the withinRect right - set right = 0
 		else {
 			css(placee, {
 				right: 0,
@@ -293,7 +301,7 @@ function placeHorizontally ( placee, placerRect, within, opts ){
 		}
 	}
 
-	//if no within - place absolutely
+	//if no withinRect - place absolutely
 	else {
 		css(placee, {
 			left: desirableLeft,
@@ -306,15 +314,15 @@ function placeHorizontally ( placee, placerRect, within, opts ){
 /**
  * Vertical placerRect for the left and right sides
  */
-function placeVertically ( placee, placerRect, within, opts ) {
+function placeVertically ( placee, placerRect, withinRect, parentRect, opts ) {
 	var height = placee.offsetHeight;
 	var margins = css.margins(placee);
-	var desirableTop = placerRect.top + placerRect.height*opts.align - height*opts.align;
+	var desirableTop = placerRect.top + placerRect.height*opts.align - height*opts.align - parentRect.top;
 
-	//if within is defined - apply capping position
-	if (within){
-		//if too close to the `within.right` - set right = 0
-		if (height + desirableTop > within.bottom) {
+	//if withinRect is defined - apply capping position
+	if (withinRect){
+		//if too close to the `withinRect.right` - set right = 0
+		if (height + desirableTop > withinRect.bottom) {
 			css(placee, {
 				bottom: 0,
 				top: 'auto'
@@ -322,7 +330,7 @@ function placeVertically ( placee, placerRect, within, opts ) {
 		}
 		else {
 			css(placee, {
-				top: Math.max(desirableTop, within.top),
+				top: Math.max(desirableTop, withinRect.top - parentRect.top),
 				bottom: 'auto'
 			});
 		}
@@ -355,7 +363,7 @@ function getParentHeight(placee){
 
 
 /**
- * Return offsets rectangle of an element/array/any target passed.
+ * Return offsets rectangle for an element/array/any target passed.
  * I. e. normalize offsets rect
  *
  * @param {*} el Element, selector, window, document, rect, array
@@ -363,7 +371,7 @@ function getParentHeight(placee){
  * @return {object} Offsets rectangle
  */
 function getRect(target){
-	var rect = target;
+	var rect;
 
 	if (target === win) {
 		rect = {
@@ -377,12 +385,6 @@ function getRect(target){
 	}
 	else if (type.isElement(target)) {
 		rect = css.offsets(target);
-	}
-	else if (type.isString(target)) {
-		var targetEl = doc.querySelector(target);
-		if (!targetEl) throw Error('No element queried by `' + target + '`');
-
-		rect = css.offsets(targetEl);
 	}
 	else if (type.isArray(target)){
 		//[left, top]
@@ -409,6 +411,7 @@ function getRect(target){
 		}
 	}
 	else if (type.isObject(target)){
+		rect = target;
 		if (target.width === undefined) target.width = target.right - target.left;
 		if (target.height === undefined) target.height = target.bottom - target.top;
 	}
@@ -459,7 +462,29 @@ function softExtend(a,b){
 }
 
 
-/** test whether window is scrollable by x */
-function hasScrollbarX(){
+/** test whether window is scrollable by x/y (scrollbar is visible) */
+function hasScrollX(){
 	return window.innerHeight > root.clientHeight;
+}
+function hasScrollY(){
+	return window.innerWidth > root.clientWidth;
+}
+
+
+/** A tiny wrapper to get elements. Tries to recognize any query */
+function getElement(q, target){
+	var result;
+
+	if (!q) return;
+
+	//some predefined strings
+	if (/^parent/.test(q) || q === '..') {
+		result = target.parentNode;
+	}
+	else {
+		result = qEl(q);
+		if (result === null) result = q;
+	}
+
+	return result;
 }
