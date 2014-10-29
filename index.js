@@ -67,7 +67,6 @@ function place(element, options){
 	options.relativeTo = getElement(options.relativeTo, element);
 	options.within = getElement(options.within, element);
 
-
 	//set the same position as the target’s one
 	var isAbsolute = false;
 	if (type.isElement(options.relativeTo) && css.isFixed(options.relativeTo)) {
@@ -223,11 +222,17 @@ var placeBySide = {
 		// }
 
 		//place vertically properly
-		placeVertically(placee, placerRect, withinRect, parentRect, opts);
+		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
 
+
+		var parent = placee.offsetParent;
+
+		//add corrective if parent is body with static positioning
+		var corrective = (hasScrollX() && (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') ? css.scrollbar : 0 );
 
 		//place vertically top-side
-		var bottom = getParentHeight(placee) - placerRect.top - hasScrollX() ? css.scrollbar : 0;
+		var bottom = parentRect.height - placerRect.top - corrective + parentRect.top;
+
 		css(placee, {
 			bottom: bottom,
 			top: 'auto'
@@ -240,9 +245,10 @@ var placeBySide = {
 	bottom: function(placee, opts){
 		// console.log('place bottom');
 
-		var height = placee.offsetHeight;
-		var width = placee.offsetWidth;
-		var margins = css.margins(placee);
+		//get relativeTo & within rectangles
+		var placerRect = getRect(opts.relativeTo);
+		var withinRect = getRect(opts.within);
+		var parentRect = getRect(placee.offsetParent);
 
 		//check if there is enough place for placing bottom
 		// if (height + margins.top + margins.bottom > Math.abs(within.bottom - placerRect.bottom)) {
@@ -257,16 +263,12 @@ var placeBySide = {
 		// }
 
 		//place horizontally properly
-		placeHorizontally.apply(this, arguments);
+		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
 
-		//calc doc.body offset, margin may collapse
-		var parent = placee.offsetParent;
-		var bodyOffsetY = 0;
-		if ((parent === doc.body || parent === root) && win.getComputedStyle(parent).position !== 'static') bodyOffsetY = css.offsets(parent).top;
 
 		//place bottom
 		css(placee, {
-			top: placerRect.bottom - bodyOffsetY,
+			top: placerRect.bottom - parentRect.top,
 			bottom: 'auto',
 		});
 
@@ -282,13 +284,14 @@ var placeBySide = {
 function placeHorizontally ( placee, placerRect, withinRect, parentRect, opts ){
 	var width = placee.offsetWidth;
 	var margins = css.margins(placee);
-	var desirableLeft = placerRect.left + placerRect.width*opts.align - width*opts.align;
+
+	var desirableLeft = placerRect.left + placerRect.width*opts.align - width*opts.align - parentRect.left;
 
 	//if withinRect is defined - mind right border
 	if (withinRect) {
 		if (width + desirableLeft < withinRect.right){
 			css(placee, {
-				left: Math.max(desirableLeft, withinRect.left),
+				left: Math.max(desirableLeft, withinRect.left - parentRect.left),
 				right: 'auto'
 			});
 		}
@@ -345,21 +348,6 @@ function placeVertically ( placee, placerRect, withinRect, parentRect, opts ) {
 	}
 }
 
-
-/**
- * Return reliable parent height
- */
-function getParentHeight(placee){
-	var parent = placee.offsetParent;
-	var parentHeight = parent && parent.offsetHeight || 0;
-
-	//get reliable parent height
-	//body & html with position:static tend to consider bottom:0 as a viewport bottom
-	//so take the parentHeight for the vp height
-	if ((parent === doc.body || parent === root) && win.getComputedStyle(parent).position === 'static') parentHeight = win.innerHeight;
-
-	return parentHeight;
-}
 
 
 /**
