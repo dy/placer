@@ -212,11 +212,18 @@ var placeBySide = {
 		//place horizontally properly
 		placeHorizontally.apply(this, arguments);
 
+
 		//place vertically top-side
+		var bottom = getParentHeight(placee) - placerRect.top;
 		css(placee, {
-			bottom: getParentHeight(placee) - placerRect.top,
+			bottom: bottom,
 			top: 'auto'
 		});
+
+		//check whether bottom scrollbar needs to be subtracted
+		if (hasScrollbarX()){
+			css(placee, 'bottom', bottom - css.scrollbar);
+		}
 
 		//upd options
 		opts.side = 'top';
@@ -251,10 +258,9 @@ var placeBySide = {
 
 		//place bottom
 		css(placee, {
-			top: placerRect.bottom,
+			top: placerRect.bottom - bodyOffsetY,
 			bottom: 'auto',
 		});
-
 
 		//upd options
 		opts.side = 'bottom';
@@ -265,7 +271,7 @@ var placeBySide = {
 /**
  * Horizontal placer for the top and bottom sides
  */
-function placeHorizontally(placee, placerRect, within, opts){
+function placeHorizontally ( placee, placerRect, within, opts ){
 	var width = placee.offsetWidth;
 	var margins = css.margins(placee);
 	var desirableLeft = placerRect.left + placerRect.width*opts.align - width*opts.align;
@@ -305,16 +311,27 @@ function placeVertically ( placee, placerRect, within, opts ) {
 	var margins = css.margins(placee);
 	var desirableTop = placerRect.top + placerRect.height*opts.align - height*opts.align;
 
-	//if too close to the `within.right` - set right = 0
-	if (height + desirableTop > within.bottom) {
-		css(placee, {
-			bottom: 0,
-			top: 'auto'
-		});
+	//if within is defined - apply capping position
+	if (within){
+		//if too close to the `within.right` - set right = 0
+		if (height + desirableTop > within.bottom) {
+			css(placee, {
+				bottom: 0,
+				top: 'auto'
+			});
+		}
+		else {
+			css(placee, {
+				top: Math.max(desirableTop, within.top),
+				bottom: 'auto'
+			});
+		}
 	}
+
+	//else place regardless of position
 	else {
 		css(placee, {
-			top: Math.max(desirableTop, within.top),
+			top: desirableTop,
 			bottom: 'auto'
 		});
 	}
@@ -430,7 +447,6 @@ function getAlign(value){
 /**
  * Soft extender (appends lacking props)
  */
-
 function softExtend(a,b){
 	//ensure object
 	if (!a) a = {};
@@ -440,4 +456,10 @@ function softExtend(a,b){
 	}
 
 	return a;
+}
+
+
+/** test whether window is scrollable by x */
+function hasScrollbarX(){
+	return window.innerHeight > root.clientHeight;
 }

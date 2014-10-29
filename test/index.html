@@ -5,11 +5,22 @@
 		font-family: sans-serif;
 		font-size: 12px;
 		background: #f8f8f8;
+		text-align: center;
+		color: #b8b8b8;
+		text-shadow: 0 1px 0 0 white;
+	}
+	h1,h2,h3{
+		text-align: center;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		/*font-weight: normal;*/
+		font-size: 1.6em;
+		line-height: 2;
 	}
 	.container{
 		background: white;
 		display: inline-block;
-		min-width: 200px;
+		min-width: 220px;
 		height: 200px;
 		margin: 3px 1px;
 		vertical-align: top;
@@ -43,6 +54,40 @@
 <script src="../node_modules/require-stub/index.js"></script>
 <script src="../index.js" data-module-name="placer"></script>
 
+
+<h1>No restriction container</h1>
+
+
+<!-- side: left -->
+<div class="container">
+	<div class="placee" side="left" align="top" title="align">top</div>
+	<div class="placer" title="side">left</div>
+</div>
+<div class="container">
+	<div class="placee" side="left" align="middle" title="align">middle</div>
+	<div class="placer" title="side">left</div>
+</div>
+<div class="container">
+	<div class="placee" side="left" align="bottom" title="align">bottom</div>
+	<div class="placer" title="side">left</div>
+</div>
+
+
+<!-- side: right -->
+<div class="container">
+	<div class="placee" side="right" align="top" title="align">top</div>
+	<div class="placer" title="side">right</div>
+</div>
+<div class="container">
+	<div class="placee" side="right" align="middle" title="align">middle</div>
+	<div class="placer" title="side">right</div>
+</div>
+<div class="container">
+	<div class="placee" side="right" align="bottom" title="align">bottom</div>
+	<div class="placer" title="side">right</div>
+</div>
+
+
 <!-- side: top -->
 <div class="container">
 	<div class="placee" side="top" align="left" title="align">left</div>
@@ -72,16 +117,6 @@
 	<div class="placer" title="side">bottom</div>
 </div>
 
-<!-- <div class="container">
-	<div class="placee" side="right">↘</div>
-	<div class="placer"></div>
-</div>
-<div class="container">
-	<div class="placee">↙</div>
-	<div class="placer"></div>
-</div> -->
-
-<!-- align container -->
 
 
 <script>
