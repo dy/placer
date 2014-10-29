@@ -1,6 +1,9 @@
 <!doctype html>
 
 <style type="text/css">
+	* {
+		box-sizing: border-box;
+	}
 	body{
 		font-family: sans-serif;
 		font-size: 12px;
@@ -16,6 +19,8 @@
 		/*font-weight: normal;*/
 		font-size: 1.6em;
 		line-height: 2;
+		margin-top: 2em;
+		margin-bottom: 1em;
 	}
 	.container{
 		background: white;
@@ -29,6 +34,19 @@
 		font-size: 9px;
 		letter-spacing: 1px;
 		text-transform: uppercase;
+	}
+	.padding{
+		padding: 20px;
+		position: relative;
+	}
+	.padding:after{
+		content: '';
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		right: 20px;
+		bottom: 20px;
+		border: 1px dashed #bbb;
 	}
 	.placee{
 		display: block;
@@ -55,7 +73,7 @@
 <script src="../index.js" data-module-name="placer"></script>
 
 
-<h1>No restriction container</h1>
+<h1>Defatult placing</h1>
 
 
 <!-- side: left -->
@@ -119,20 +137,43 @@
 
 
 
+<h1>Within a container</h1>
+
+<!-- side: left -->
+<div class="container padding">
+	<div class="placee" side="left" align="top" within="parent" title="align">top</div>
+	<div class="placer" title="side">left</div>
+</div>
+<div class="container padding">
+	<div class="placee" side="left" align="middle" within="parent" title="align">middle</div>
+	<div class="placer" title="side">left</div>
+</div>
+<div class="container padding">
+	<div class="placee" side="left" align="bottom" within="parent" title="align">bottom</div>
+	<div class="placer" title="side">left</div>
+</div>
+
+
 <script>
 	var place = require('placer');
 
 	//query all placee blocks, apply placer positioning
-	var $placees = document.querySelectorAll('.placee');
-	for (var i = 0, l = $placees.length, $placee; i < l; i++){
-		$placee = $placees[i];
-		place($placee, {
-			relativeTo: $placee.getAttribute('relative-to') || $placee.nextSibling.nextSibling,
-			side: $placee.getAttribute('side'),
-			avoid: $placee.getAttribute('avoid'),
-			align: $placee.getAttribute('align'),
-			within: $placee.getAttribute('within'),
-			side: $placee.getAttribute('side')
-		});
+	function update(){
+		var $placees = document.querySelectorAll('.placee');
+		for (var i = 0, l = $placees.length, $placee; i < l; i++){
+			$placee = $placees[i];
+			place($placee, {
+				relativeTo: $placee.getAttribute('relative-to') || $placee.nextSibling.nextSibling,
+				side: $placee.getAttribute('side'),
+				avoid: $placee.getAttribute('avoid'),
+				align: $placee.getAttribute('align'),
+				within: $placee.getAttribute('within'),
+				side: $placee.getAttribute('side')
+			});
+		}
 	}
+
+	update();
+
+	window.addEventListener('resize', update);
 </script>
