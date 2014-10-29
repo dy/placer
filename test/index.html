@@ -1,0 +1,103 @@
+<!doctype html>
+
+<style type="text/css">
+	body{
+		font-family: sans-serif;
+		font-size: 12px;
+		background: #f8f8f8;
+	}
+	.container{
+		background: white;
+		display: inline-block;
+		min-width: 200px;
+		height: 200px;
+		margin: 3px 1px;
+		vertical-align: top;
+		text-align: center;
+		line-height: 200px;
+		font-size: 9px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+	.placee{
+		display: block;
+		width: 80px;
+		height: 70px;
+		line-height: 70px;
+		background: rgb(162, 255, 199);
+		color: rgba(81, 104, 148, .8);
+		text-align: center;
+	}
+	.placer{
+		background: rgb(164, 221, 248);
+		display: inline-block;
+		width: 120px;
+		height: 40px;
+		line-height: 40px;
+		vertical-align: middle;
+		color: rgba(81, 104, 148, .8);
+		text-align: center;
+	}
+</style>
+
+<script src="../node_modules/require-stub/index.js"></script>
+<script src="../index.js" data-module-name="placer"></script>
+
+<!-- side: top -->
+<div class="container">
+	<div class="placee" side="top" align="left" title="align">left</div>
+	<div class="placer" title="side">top</div>
+</div>
+<div class="container">
+	<div class="placee" side="top" align="center" title="align">center</div>
+	<div class="placer" title="side">top</div>
+</div>
+<div class="container">
+	<div class="placee" side="top" align="right" title="align">right</div>
+	<div class="placer" title="side">top</div>
+</div>
+
+
+<!-- side: bottom -->
+<div class="container">
+	<div class="placee" side="bottom" align="left" title="align">left</div>
+	<div class="placer" title="side">bottom</div>
+</div>
+<div class="container">
+	<div class="placee" side="bottom" align="center" title="align">center</div>
+	<div class="placer" title="side">bottom</div>
+</div>
+<div class="container">
+	<div class="placee" side="bottom" align="right" title="align">right</div>
+	<div class="placer" title="side">bottom</div>
+</div>
+
+<!-- <div class="container">
+	<div class="placee" side="right">↘</div>
+	<div class="placer"></div>
+</div>
+<div class="container">
+	<div class="placee">↙</div>
+	<div class="placer"></div>
+</div> -->
+
+<!-- align container -->
+
+
+<script>
+	var place = require('placer');
+
+	//query all placee blocks, apply placer positioning
+	var $placees = document.querySelectorAll('.placee');
+	for (var i = 0, l = $placees.length, $placee; i < l; i++){
+		$placee = $placees[i];
+		place($placee, {
+			relativeTo: $placee.getAttribute('relative-to') || $placee.nextSibling.nextSibling,
+			side: $placee.getAttribute('side'),
+			avoid: $placee.getAttribute('avoid'),
+			align: $placee.getAttribute('align'),
+			within: $placee.getAttribute('within'),
+			side: $placee.getAttribute('side')
+		});
+	}
+</script>

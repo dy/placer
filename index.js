@@ -11,13 +11,12 @@ var css = require('mucss');
 
 
 //shortcuts
-var win = window, doc = document, root = doc.documentElement, body = doc.body;
+var win = window, doc = document, root = doc.documentElement;
 
 
 /**
  * Default options
  */
-
 var defaults = {
 	//source to align relatively to
 	//element/{x,y}/[x,y]/
@@ -26,9 +25,6 @@ var defaults = {
 	//which side to palce element
 	//t/r/b/l, 'center' ( === undefined),
 	side: 'center',
-
-	//set of sides to ignore positioning, {top:true, ...}
-	ignore: {},
 
 	/**
 	 * Side to align: trbl/0..1/center
@@ -42,10 +38,7 @@ var defaults = {
 	avoid: undefined,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
-	within: undefined,
-
-	//TODO: whether to calc placement
-	fluidly: false
+	within: undefined
 };
 
 
@@ -59,18 +52,14 @@ var defaults = {
  *
  * @return {boolean} The result of placement - whether placing succeeded
  */
-
 function place(element, options){
 	options = softExtend(options, defaults);
 
 	//recalc align
 	options.align = getAlign(options.align);
 
-	//calc containers
+	//calc within container
 	var withinRect = getRect(options.within);
-	var relativeToRect = getRect(options.relativeTo);
-	var elementRect = getRect(element);
-
 
 	//set the position as of the target
 	if (type.isElement(options.relativeTo) && css.isFixed(options.relativeTo)) {
@@ -78,7 +67,7 @@ function place(element, options){
 	}
 	else {
 		element.style.position = 'absolute';
-		//get proper win offsets
+		//correct win offsets in case of absolute placement
 		if (options.within === win) {
 			withinRect.top += win.pageYOffset;
 			withinRect.bottom += win.pageYOffset;
@@ -86,6 +75,9 @@ function place(element, options){
 			withinRect.right += win.pageXOffset;
 		}
 	}
+
+	//placer rect afterwards (its rect may have changed due to position change)
+	var relativeToRect = getRect(options.relativeTo);
 
 
 	//check whether there’s enough place (avoid placing redirection loop)
@@ -108,18 +100,17 @@ function place(element, options){
 
 
 /**
- * Set of position placers
+ * Set of position placerRects
  * @enum {Function}
  * @param {Element} placee Element to place
  * @param {object} target Offsets rectangle (absolute position)
  * @param {object} ignore Sides to avoid entering (usually, already tried)
  */
-
 var placeBySide = {
-	center: function(placee, target, within, opts){
+	center: function(placee, placerRect, within, opts){
 		// console.log('place center');
 
-		var center = [(target.left + target.right) *.5, (target.bottom + target.top) *.5];
+		var center = [(placerRect.left + placerRect.right) *.5, (placerRect.bottom + placerRect.top) *.5];
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
 
@@ -132,18 +123,18 @@ var placeBySide = {
 		opts.side = 'center';
 	},
 
-	left: function(placee, target, within, opts){
+	left: function(placee, placerRect, within, opts){
 		// console.log('place left')
 
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
 
 		//check if there is enough place for placing from the left
-		// if (width > Math.abs(within.left - target.left)) {
+		// if (width > Math.abs(within.left - placerRect.left)) {
 		// 	opts.ignore.left = true;
 
 		// 	//if not - compare left/bottom displacement and place whether vertically or inverse
-		// 	if (Math.abs(target.top - within.top) > Math.abs(within.left - target.left) && !opts.ignore.right){
+		// 	if (Math.abs(placerRect.top - within.top) > Math.abs(within.left - placerRect.left) && !opts.ignore.right){
 		// 		return placeBySide.right.apply(this, arguments);
 		// 	} else {
 		// 		return placeBySide.bottom.apply(this, arguments);
@@ -154,11 +145,11 @@ var placeBySide = {
 		//get reliable parent width
 		var parent = placee.offsetParent;
 		var parentWidth = parent && parent.offsetWidth || 0;
-		if (parent === body || parent === root && win.getComputedStyle(parent).position === 'static') parentWidth = win.innerWidth;
+		if (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') parentWidth = win.innerWidth;
 
 		//place left
 		css(placee, {
-			right: parentWidth - target.left - 18,
+			right: parentWidth - placerRect.left - 18,
 			left: 'auto'
 		});
 
@@ -169,18 +160,18 @@ var placeBySide = {
 		opts.side = 'left';
 	},
 
-	right: function(placee, target, within, opts){
+	right: function(placee, placerRect, within, opts){
 		// console.log('place right')
 
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
 
 		//check if there is enough place for placing bottom
-		// if (width > Math.abs(within.right - target.right)) {
+		// if (width > Math.abs(within.right - placerRect.right)) {
 		// 	opts.ignore.right = true;
 
 		// 	//if not - compare top/right displacement and place whether aside or inverse
-		// 	if (Math.abs(target.top - within.top) > Math.abs(within.right - target.right) && !opts.ignore.left){
+		// 	if (Math.abs(placerRect.top - within.top) > Math.abs(within.right - placerRect.right) && !opts.ignore.left){
 		// 		return placeBySide.left.apply(this, arguments);
 		// 	} else {
 		// 		return placeBySide.bottom.apply(this, arguments);
@@ -189,7 +180,7 @@ var placeBySide = {
 
 		//place right
 		css(placee, {
-			left: target.right,
+			left: placerRect.right,
 			right: 'auto',
 		});
 
@@ -200,18 +191,18 @@ var placeBySide = {
 		opts.side = 'right';
 	},
 
-	top: function(placee, target, within, opts){
+	top: function(placee, placerRect, within, opts){
 		// console.log('place top');
 
 		var width = placee.offsetWidth;
 		var height = placee.offsetHeight;
 
 		//check if there is enough place for placing top
-		// if (height > Math.abs(within.top - target.top)) {
+		// if (height > Math.abs(within.top - placerRect.top)) {
 		// 	opts.ignore.top = true;
 
 		// 	//if not - compare left/top displacement and place whether aside or inverse
-		// 	if (Math.abs(target.left - within.left) > Math.abs(within.top - target.top) && !opts.ignore.bottom){
+		// 	if (Math.abs(placerRect.left - within.left) > Math.abs(within.top - placerRect.top) && !opts.ignore.bottom){
 		// 		return placeBySide.bottom.apply(this, arguments);
 		// 	} else {
 		// 		return placeBySide.left.apply(this, arguments);
@@ -221,17 +212,9 @@ var placeBySide = {
 		//place horizontally properly
 		placeHorizontally.apply(this, arguments);
 
-		//place top
-		var parent = placee.offsetParent;
-		var parentHeight = parent && parent.offsetHeight || 0;
-
-		//get reliable parent height
-		//body & html with position:static tend to consider bottom:0 as a viewport bottom
-		//so take the parentHeight for the vp height
-
-		if ((parent === body || parent === root) && win.getComputedStyle(parent).position === 'static') parentHeight = win.innerHeight;
+		//place vertically top-side
 		css(placee, {
-			bottom: parentHeight - target.top,
+			bottom: getParentHeight(placee) - placerRect.top,
 			top: 'auto'
 		});
 
@@ -239,7 +222,7 @@ var placeBySide = {
 		opts.side = 'top';
 	},
 
-	bottom: function(placee, target, within, opts){
+	bottom: function(placee, placerRect, within, opts){
 		// console.log('place bottom');
 
 		var height = placee.offsetHeight;
@@ -247,30 +230,31 @@ var placeBySide = {
 		var margins = css.margins(placee);
 
 		//check if there is enough place for placing bottom
-		// if (height + margins.top + margins.bottom > Math.abs(within.bottom - target.bottom)) {
+		// if (height + margins.top + margins.bottom > Math.abs(within.bottom - placerRect.bottom)) {
 		// 	opts.ignore.bottom = true;
 
 		// 	//if not - compare left/bottom displacement and place whether aside or inverse
-		// 	if (Math.abs(target.left - within.left) > Math.abs(within.bottom - target.bottom) && !opts.ignore.top){
+		// 	if (Math.abs(placerRect.left - within.left) > Math.abs(within.bottom - placerRect.bottom) && !opts.ignore.top){
 		// 		return placeBySide.top.apply(this, arguments);
 		// 	} else {
 		// 		return placeBySide.left.apply(this, arguments);
 		// 	}
 		// }
 
-		//calc body margin collapsing offset
+		//place horizontally properly
+		placeHorizontally.apply(this, arguments);
+
+		//calc doc.body offset, margin may collapse
 		var parent = placee.offsetParent;
 		var bodyOffsetY = 0;
-		if ((parent === body || parent === root) && win.getComputedStyle(parent).position !== 'static') bodyOffsetY = css.offsets(parent).top;
+		if ((parent === doc.body || parent === root) && win.getComputedStyle(parent).position !== 'static') bodyOffsetY = css.offsets(parent).top;
 
 		//place bottom
 		css(placee, {
-			top: target.bottom - bodyOffsetY,
+			top: placerRect.bottom,
 			bottom: 'auto',
 		});
 
-		//place horizontally properly
-		placeHorizontally.apply(this, arguments);
 
 		//upd options
 		opts.side = 'bottom';
@@ -281,37 +265,45 @@ var placeBySide = {
 /**
  * Horizontal placer for the top and bottom sides
  */
-
-function placeHorizontally(placee, target, within, opts){
+function placeHorizontally(placee, placerRect, within, opts){
 	var width = placee.offsetWidth;
 	var margins = css.margins(placee);
+	var desirableLeft = placerRect.left + placerRect.width*opts.align - width*opts.align;
 
-	var desirableLeft = target.left + target.width*opts.align - width*opts.align;
-
-	if (within && width + desirableLeft < within.right) {
-		css(placee, {
-			left: Math.max(desirableLeft, within.left),
-			right: 'auto'
-		});
-		return;
+	//if within is defined - mind right border
+	if (within) {
+		if (width + desirableLeft < within.right){
+			css(placee, {
+				left: Math.max(desirableLeft, within.left),
+				right: 'auto'
+			});
+		}
+		//if too close to the within right - set right = 0
+		else {
+			css(placee, {
+				right: 0,
+				left: 'auto'
+			});
+		}
 	}
 
-	//if too close to the within right - set right = 0
-	css(placee, {
-		right: 0,
-		left: 'auto'
-	});
+	//if no within - place absolutely
+	else {
+		css(placee, {
+			left: desirableLeft,
+			right: 'auto'
+		});
+	}
 }
 
 
 /**
- * Vertical placer for the left and right sides
+ * Vertical placerRect for the left and right sides
  */
-
-function placeVertically ( placee, target, within, opts ) {
+function placeVertically ( placee, placerRect, within, opts ) {
 	var height = placee.offsetHeight;
 	var margins = css.margins(placee);
-	var desirableTop = target.top + target.height*opts.align - height*opts.align;
+	var desirableTop = placerRect.top + placerRect.height*opts.align - height*opts.align;
 
 	//if too close to the `within.right` - set right = 0
 	if (height + desirableTop > within.bottom) {
@@ -330,6 +322,22 @@ function placeVertically ( placee, target, within, opts ) {
 
 
 /**
+ * Return reliable parent height
+ */
+function getParentHeight(placee){
+	var parent = placee.offsetParent;
+	var parentHeight = parent && parent.offsetHeight || 0;
+
+	//get reliable parent height
+	//body & html with position:static tend to consider bottom:0 as a viewport bottom
+	//so take the parentHeight for the vp height
+	if ((parent === doc.body || parent === root) && win.getComputedStyle(parent).position === 'static') parentHeight = win.innerHeight;
+
+	return parentHeight;
+}
+
+
+/**
  * Return offsets rectangle of an element/array/any target passed.
  * I. e. normalize offsets rect
  *
@@ -337,7 +345,6 @@ function placeVertically ( placee, target, within, opts ) {
  *
  * @return {object} Offsets rectangle
  */
-
 function getRect(target){
 	var rect = target;
 
@@ -345,7 +352,7 @@ function getRect(target){
 		rect = {
 			top: 0,
 			left: 0,
-			right: body.offsetWidth,
+			right: doc.body.offsetWidth,
 			bottom: win.innerHeight,
 		};
 		rect.width = rect.right - rect.left;
@@ -398,7 +405,6 @@ function getRect(target){
  *
  * @param {string|number} value Convert any value passed to float 0..1
  */
-
 function getAlign(value){
 	if (!value) return 0;
 
@@ -410,6 +416,9 @@ function getAlign(value){
 			case 'right':
 			case 'bottom':
 				return 1;
+			case 'center':
+			case 'middle':
+				return 0.5;
 		}
 	}
 	var num = parseFloat(value);
