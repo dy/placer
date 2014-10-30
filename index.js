@@ -149,12 +149,14 @@ var placeBySide = {
 		// 	}
 		// }
 
-		var paddings = css.paddings(placee.offsetParent);
+		//add corrective if parent is body with static positioning
+		var parent = placee.offsetParent;
+		var corrective = (hasScrollY() && (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') ? css.scrollbar : 0 );
 
 		//place left (set right minding that placee witdth may change)
 
 		css(placee, {
-			right: parentRect.width - placerRect.left + (hasScrollY() ? css.scrollbar : 0) + parentRect.left - paddings.left,
+			right: parentRect.width - placerRect.left + corrective + parentRect.left,
 			left: 'auto'
 		});
 
