@@ -109,137 +109,251 @@
 		/*letter-spacing: 1px;*/
 		/*text-transform: uppercase;*/
 	}
+
+	.restrictor{
+		position: relative;
+	}
+	.limiter{
+		position: absolute;
+		opacity: .3;
+	}
+	.container:hover .limiter{
+		opacity: 1;
+	}
+	.limiter-h{
+		left: 0px;
+		right: 0px;
+		height: 1px;
+		top: 30px;
+		border-bottom: 2px dashed gray;
+	}
+	.limiter-h:after{
+		content:'';
+		position: absolute;
+		top: -5px;
+		bottom: -5px;
+		left: 0;
+		right: 0;
+		cursor: s-resize;
+	}
+	.limiter-v{
+		top: 0px;
+		bottom: 0px;
+		width: 1px;
+		left: 30px;
+		border-right: 2px dashed gray;
+	}
+	.limiter-v:after{
+		content:'';
+		position: absolute;
+		left: -5px;
+		right: -5px;
+		top: 0;
+		bottom: 0;
+		cursor: e-resize;
+	}
 </style>
+
 
 <script src="../node_modules/require-stub/index.js"></script>
 <!-- <script src="../node_modules/xxx/index.js"></script> -->
 <script src="../index.js" data-module-name="placer"></script>
 
 
-<h2>Static position</h2>
+<section id="static">
+	<h2>§&thinsp;1. Static position</h2>
 
 
-<div class="container">
-	<div class="placee" side="left" align="top" title="align">top</div>
-	<div class="placer" title="side">left</div>
-</div>
-<div class="container">
-	<div class="placee" side="left" align="middle" title="align">middle</div>
-	<div class="placer" title="side">left</div>
-</div>
-<div class="container">
-	<div class="placee" side="left" align="bottom" title="align">bottom</div>
-	<div class="placer" title="side">left</div>
-</div>
-
-
-
-<div class="container">
-	<div class="placee" side="right" align="top" title="align">top</div>
-	<div class="placer" title="side">right</div>
-</div>
-<div class="container">
-	<div class="placee" side="right" align="middle" title="align">middle</div>
-	<div class="placer" title="side">right</div>
-</div>
-<div class="container">
-	<div class="placee" side="right" align="bottom" title="align">bottom</div>
-	<div class="placer" title="side">right</div>
-</div>
+	<div class="container">
+		<div class="placee" side="left" align="top" title="align">top</div>
+		<div class="placer" title="side">left</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="left" align="middle" title="align">middle</div>
+		<div class="placer" title="side">left</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="left" align="bottom" title="align">bottom</div>
+		<div class="placer" title="side">left</div>
+	</div>
 
 
 
-<div class="container">
-	<div class="placee" side="top" align="left" title="align">left</div>
-	<div class="placer" title="side">top</div>
-</div>
-<div class="container">
-	<div class="placee" side="top" align="center" title="align">center</div>
-	<div class="placer" title="side">top</div>
-</div>
-<div class="container">
-	<div class="placee" side="top" align="right" title="align">right</div>
-	<div class="placer" title="side">top</div>
-</div>
-
-
-<div class="container">
-	<div class="placee" side="bottom" align="left" title="align">left</div>
-	<div class="placer" title="side">bottom</div>
-</div>
-<div class="container">
-	<div class="placee" side="bottom" align="center" title="align">center</div>
-	<div class="placer" title="side">bottom</div>
-</div>
-<div class="container">
-	<div class="placee" side="bottom" align="right" title="align">right</div>
-	<div class="placer" title="side">bottom</div>
-</div>
+	<div class="container">
+		<div class="placee" side="right" align="top" title="align">top</div>
+		<div class="placer" title="side">right</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="right" align="middle" title="align">middle</div>
+		<div class="placer" title="side">right</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="right" align="bottom" title="align">bottom</div>
+		<div class="placer" title="side">right</div>
+	</div>
 
 
 
-<h2>Relative position with paddings,<br/>margins and border</h2>
+	<div class="container">
+		<div class="placee" side="top" align="left" title="align">left</div>
+		<div class="placer" title="side">top</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="top" align="center" title="align">center</div>
+		<div class="placer" title="side">top</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="top" align="right" title="align">right</div>
+		<div class="placer" title="side">top</div>
+	</div>
 
 
-<div class="container padding">
-	<div class="placee" side="left" align="top" title="align">top</div>
-	<div class="placer" title="side">left</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="left" align="middle" title="align">middle</div>
-	<div class="placer" title="side">left</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="left" align="bottom" title="align">bottom</div>
-	<div class="placer" title="side">left</div>
-</div>
+	<div class="container">
+		<div class="placee" side="bottom" align="left" title="align">left</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="bottom" align="center" title="align">center</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+	<div class="container">
+		<div class="placee" side="bottom" align="right" title="align">right</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+</section>
 
 
-<div class="container padding">
-	<div class="placee" side="right" align="top" title="align">top</div>
-	<div class="placer" title="side">right</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="right" align="middle" title="align">middle</div>
-	<div class="placer" title="side">right</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="right" align="bottom" title="align">bottom</div>
-	<div class="placer" title="side">right</div>
-</div>
+<section id="relative">
+	<h2>§&thinsp;2. Relative position with paddings,<br/>margins and border</h2>
 
 
-<div class="container padding">
-	<div class="placee" side="top" align="left" title="align">left</div>
-	<div class="placer" title="side">top</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="top" align="center" title="align">center</div>
-	<div class="placer" title="side">top</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="top" align="right" title="align">right</div>
-	<div class="placer" title="side">top</div>
-</div>
+	<div class="container padding">
+		<div class="placee" side="left" align="top" title="align">top</div>
+		<div class="placer" title="side">left</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="left" align="middle" title="align">middle</div>
+		<div class="placer" title="side">left</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="left" align="bottom" title="align">bottom</div>
+		<div class="placer" title="side">left</div>
+	</div>
 
 
-<div class="container padding">
-	<div class="placee" side="bottom" align="left" title="align">left</div>
-	<div class="placer" title="side">bottom</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="bottom" align="center" title="align">center</div>
-	<div class="placer" title="side">bottom</div>
-</div>
-<div class="container padding">
-	<div class="placee" side="bottom" align="right" title="align">right</div>
-	<div class="placer" title="side">bottom</div>
-</div>
+	<div class="container padding">
+		<div class="placee" side="right" align="top" title="align">top</div>
+		<div class="placer" title="side">right</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="right" align="middle" title="align">middle</div>
+		<div class="placer" title="side">right</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="right" align="bottom" title="align">bottom</div>
+		<div class="placer" title="side">right</div>
+	</div>
 
 
+	<div class="container padding">
+		<div class="placee" side="top" align="left" title="align">left</div>
+		<div class="placer" title="side">top</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="top" align="center" title="align">center</div>
+		<div class="placer" title="side">top</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="top" align="right" title="align">right</div>
+		<div class="placer" title="side">top</div>
+	</div>
 
-<h2>Restricting container</h2>
-TODO: limit sides
+
+	<div class="container padding">
+		<div class="placee" side="bottom" align="left" title="align">left</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="bottom" align="center" title="align">center</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+	<div class="container padding">
+		<div class="placee" side="bottom" align="right" title="align">right</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+</section>
+
+
+<section id="restriction">
+	<h2>§&thinsp;3. Restricting movement</h2>
+
+	<div class="container restrictor">
+		<div class="limiter limiter-h"></div>
+		<div class="placee" side="left" align="top" title="align">top</div>
+		<div class="placer" title="side">left</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-h"></div>
+		<div class="placee" side="left" align="middle" title="align">middle</div>
+		<div class="placer" title="side">left</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-h"></div>
+		<div class="placee" side="left" align="bottom" title="align">bottom</div>
+		<div class="placer" title="side">left</div>
+	</div>
+
+
+	<div class="container restrictor">
+		<div class="limiter limiter-h"></div>
+		<div class="placee" side="right" align="top" title="align">top</div>
+		<div class="placer" title="side">right</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-h"></div>
+		<div class="placee" side="right" align="middle" title="align">middle</div>
+		<div class="placer" title="side">right</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-h"></div>
+		<div class="placee" side="right" align="bottom" title="align">bottom</div>
+		<div class="placer" title="side">right</div>
+	</div>
+
+
+	<div class="container restrictor">
+		<div class="limiter limiter-v"></div>
+		<div class="placee" side="top" align="left" title="align">left</div>
+		<div class="placer" title="side">top</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-v"></div>
+		<div class="placee" side="top" align="center" title="align">center</div>
+		<div class="placer" title="side">top</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-v"></div>
+		<div class="placee" side="top" align="right" title="align">right</div>
+		<div class="placer" title="side">top</div>
+	</div>
+
+
+	<div class="container restrictor">
+		<div class="limiter limiter-v"></div>
+		<div class="placee" side="bottom" align="left" title="align">left</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-v"></div>
+		<div class="placee" side="bottom" align="center" title="align">center</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+	<div class="container restrictor">
+		<div class="limiter limiter-v"></div>
+		<div class="placee" side="bottom" align="right" title="align">right</div>
+		<div class="placer" title="side">bottom</div>
+	</div>
+</section>
 
 
 <h2>Relative to window</h2>
@@ -256,6 +370,15 @@ TODO: add avoiding strategy
 
 <script>
 	var place = require('placer');
+	var Draggy = require('draggy');
+
+	//init all draggies
+	var $draggies = document.querySelectorAll('.limiter');
+	for (var i = 0, l = $draggies.length, $draggy; i < l; i++){
+		$draggy = $draggies[i];
+		new Draggy($draggy);
+	}
+
 
 	//query all placee blocks, apply placer positioning
 	function update(){

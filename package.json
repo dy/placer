@@ -36,6 +36,7 @@
     "tiny-element": "~1.1.0"
   },
   "devDependencies": {
-    "require-stub": "~1.x"
+    "require-stub": "~1.x",
+    "draggy": "*"
   }
 }
