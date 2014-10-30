@@ -18,9 +18,9 @@
 		letter-spacing: 1px;
 		/*font-weight: normal;*/
 		font-size: 1.6em;
-		line-height: 2;
-		margin-top: 2em;
-		margin-bottom: 1em;
+		line-height: 1.6;
+		margin-top: 2.4em;
+		margin-bottom: 1.2em;
 	}
 	.container{
 		background: white;
@@ -40,8 +40,11 @@
 		text-transform: uppercase;
 	}
 	.padding{
-		padding: 25px;
+		padding: 10px;
 		position: relative;
+		border: 5px solid rgba(255, 230, 203, .5);
+		margin: 10px;
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path fill='rgba(255, 230, 203 ,1)' d='M 0 0 L 1 0 0 1 0 0 z'/><path fill='rgba(255, 230, 203 ,1)' d='M 0 5 L 5 0 5 1 1 5 0 5 z'/></svg>"), white;
 	}
 	.container.padding{
 		line-height: 160px;
@@ -49,11 +52,12 @@
 	.padding:after{
 		content: '';
 		position: absolute;
-		top: 25px;
-		left: 25px;
-		right: 25px;
-		bottom: 25px;
-		border: 1px dashed #bbb;
+		top: 20px;
+		left: 20px;
+		right: 20px;
+		bottom: 20px;
+		background: white;
+		/*border: 1px dashed #bbb;*/
 	}
 	.placee{
 		display: block;
@@ -174,7 +178,7 @@
 
 
 
-<h2>Relative position with paddings</h2>
+<h2>Relative position with paddings,<br/>margins and border</h2>
 
 
 <div class="container padding">
@@ -269,6 +273,8 @@ TODO: add avoiding strategy
 		}
 	}
 
+	//double update to exclude caused horizontal scroll
+	update();
 	update();
 
 	window.addEventListener('resize', update);

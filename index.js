@@ -153,10 +153,12 @@ var placeBySide = {
 		var parent = placee.offsetParent;
 		var corrective = (hasScrollY() && (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') ? css.scrollbar : 0 );
 
-		//place left (set css right because placee width may change)
+		//correct borders
+		includeBorders(parentRect, parent);
 
+		//place left (set css right because placee width may change)
 		css(placee, {
-			right: parentRect.width - placerRect.left + corrective + parentRect.left,
+			right: parentRect.right - placerRect.left + corrective,
 			left: 'auto'
 		});
 
@@ -167,7 +169,7 @@ var placeBySide = {
 		opts.side = 'left';
 	},
 
-	right: function(placee, opts){
+	right: function (placee, opts) {
 		// console.log('place right')
 
 
@@ -189,6 +191,9 @@ var placeBySide = {
 		// 	}
 		// }
 
+
+		//correct borders
+		includeBorders(parentRect, placee.offsetParent);
 
 		//place right
 		css(placee, {
@@ -223,17 +228,24 @@ var placeBySide = {
 		// 	}
 		// }
 
+		var parent = placee.offsetParent;
+
+		//correct borders
+		includeBorders(parentRect, placee.offsetParent);
+
 		//place vertically properly
 		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
 
 
-		var parent = placee.offsetParent;
-
 		//add corrective if parent is body with static positioning
-		var corrective = (hasScrollX() && (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') ? css.scrollbar : 0 );
+		//height = vp height in that case
+		var corrective = 0;
+		if ((parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static')) {
+			if (hasScrollX()) corrective = css.scrollbar;
+		}
 
 		//place vertically top-side
-		var bottom = parentRect.height - placerRect.top - corrective + parentRect.top;
+		var bottom = parentRect.bottom - placerRect.top - corrective;
 
 		css(placee, {
 			bottom: bottom,
@@ -264,6 +276,9 @@ var placeBySide = {
 		// 	}
 		// }
 
+		//correct borders
+		includeBorders(parentRect, placee.offsetParent);
+
 		//place horizontally properly
 		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
 
@@ -278,6 +293,17 @@ var placeBySide = {
 		opts.side = 'bottom';
 	}
 };
+
+/** include borders in offsets */
+function includeBorders(rect, el){
+	//correct borders
+	var borders = css.borders(el);
+	rect.left += borders.left;
+	rect.right -= borders.right;
+	rect.bottom -= borders.bottom;
+	rect.top += borders.top;
+	return rect;
+}
 
 
 /**
