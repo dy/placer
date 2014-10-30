@@ -135,7 +135,7 @@ var placeBySide = {
 		//get relativeTo & within rectangles
 		var placerRect = getRect(opts.relativeTo);
 		var withinRect = getRect(opts.within);
-		var parentRect = getRect(placee.offsetParent);
+		var parentRect = getRect(placee.offsetParent || win);
 
 		//check if there is enough place for placing from the left
 		// if (width > Math.abs(within.left - placerRect.left)) {
@@ -153,7 +153,7 @@ var placeBySide = {
 		var parent = placee.offsetParent;
 		var corrective = (hasScrollY() && (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') ? css.scrollbar : 0 );
 
-		//place left (set right minding that placee witdth may change)
+		//place left (set css right because placee width may change)
 
 		css(placee, {
 			right: parentRect.width - placerRect.left + corrective + parentRect.left,
@@ -174,7 +174,7 @@ var placeBySide = {
 		//get relativeTo & within rectangles
 		var placerRect = getRect(opts.relativeTo);
 		var withinRect = getRect(opts.within);
-		var parentRect = getRect(placee.offsetParent);
+		var parentRect = getRect(placee.offsetParent || win);
 
 
 		//check if there is enough place for placing bottom
@@ -209,7 +209,7 @@ var placeBySide = {
 		//get relativeTo & within rectangles
 		var placerRect = getRect(opts.relativeTo);
 		var withinRect = getRect(opts.within);
-		var parentRect = getRect(placee.offsetParent);
+		var parentRect = getRect(placee.offsetParent || win);
 
 		//check if there is enough place for placing top
 		// if (height > Math.abs(within.top - placerRect.top)) {
@@ -250,7 +250,7 @@ var placeBySide = {
 		//get relativeTo & within rectangles
 		var placerRect = getRect(opts.relativeTo);
 		var withinRect = getRect(opts.within);
-		var parentRect = getRect(placee.offsetParent);
+		var parentRect = getRect(placee.offsetParent || win);
 
 		//check if there is enough place for placing bottom
 		// if (height + margins.top + margins.bottom > Math.abs(within.bottom - placerRect.bottom)) {
