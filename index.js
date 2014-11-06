@@ -6,9 +6,13 @@
 module.exports = place;
 
 
+//TODO: use translate3d instead of absolute repositioning
+
+
 var type = require('mutypes');
 var css = require('mucss');
 var qEl = require('tiny-element');
+var softExtend = require('soft-extend');
 
 
 //shortcuts
@@ -96,7 +100,6 @@ function place(element, options){
 	// if (requiredWidth > withinRect.width && requiredHeight > withinRect.height)
 	// 	placeBySide.center(element, relativeToRect, withinRect, options);
 
-
 	//else place according to the position
 	placeBySide[options.side](element, options);
 
@@ -151,14 +154,13 @@ var placeBySide = {
 
 		//add corrective if parent is body with static positioning
 		var parent = placee.offsetParent;
-		var corrective = (hasScrollY() && (parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static') ? css.scrollbar : 0 );
 
 		//correct borders
 		includeBorders(parentRect, parent);
 
 		//place left (set css right because placee width may change)
 		css(placee, {
-			right: parentRect.right - placerRect.left + corrective,
+			right: parentRect.right - placerRect.left,
 			left: 'auto'
 		});
 
@@ -237,15 +239,8 @@ var placeBySide = {
 		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
 
 
-		//add corrective if parent is body with static positioning
-		//height = vp height in that case
-		var corrective = 0;
-		if ((parent === doc.body || parent === root && win.getComputedStyle(parent).position === 'static')) {
-			if (hasScrollX()) corrective = css.scrollbar;
-		}
-
 		//place vertically top-side
-		var bottom = parentRect.bottom - placerRect.top - corrective;
+		var bottom = parentRect.bottom - placerRect.top;
 
 		css(placee, {
 			bottom: bottom,
@@ -400,7 +395,20 @@ function getRect(target){
 		rect.height = rect.bottom - rect.top;
 	}
 	else if (type.isElement(target)) {
-		rect = css.offsets(target);
+		//handle special static body case
+		if (target === doc.body || target === root && getComputedStyle(target).position === 'static'){
+			rect = {
+				left: 0,
+				right: win.innerWidth - (css.hasScrollY() ? css.scrollbar : 0),
+				width: win.innerWidth,
+				top: 0,
+				bottom: win.innerHeight - (css.hasScrollX() ? css.scrollbar : 0),
+				height: win.innerHeight
+			};
+		}
+		else {
+			rect = css.offsets(target);
+		}
 	}
 	else if (type.isArray(target)){
 		//[left, top]
@@ -460,30 +468,6 @@ function getAlign(value){
 	var num = parseFloat(value);
 
 	return num !== undefined ? num : 0.5;
-}
-
-
-/**
- * Soft extender (appends lacking props)
- */
-function softExtend(a,b){
-	//ensure object
-	if (!a) a = {};
-
-	for (var i in b){
-		if (a[i] === undefined) a[i] = b[i];
-	}
-
-	return a;
-}
-
-
-/** test whether window is scrollable by x/y (scrollbar is visible) */
-function hasScrollX(){
-	return window.innerHeight > root.clientHeight;
-}
-function hasScrollY(){
-	return window.innerWidth > root.clientWidth;
 }
 
 

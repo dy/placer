@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "require-stub": "~1.x",
-    "draggy": "*"
+    "draggy": "*",
+    "resizable": "~0.1.0"
   }
 }
