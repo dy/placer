@@ -33,7 +33,8 @@
     "mucss": "~0.x",
     "extend": "~1.3.0",
     "mutypes": "~0.x",
-    "tiny-element": "~1.1.0"
+    "tiny-element": "~1.1.0",
+    "query-relative": "~1.0.2"
   },
   "devDependencies": {
     "require-stub": "~1.x",

@@ -8,9 +8,23 @@
 		font-family: sans-serif;
 		font-size: 12px;
 		background: #f8f8f8;
-		text-align: center;
 		color: #b8b8b8;
 		text-shadow: 0 1px 0 0 white;
+	}
+	section{
+		margin:0 auto;
+		min-width: 700px;
+		width: 80%;
+		text-align: center;
+	}
+	a{
+		text-decoration: none;
+		color: #b8b8b8;
+		/*border-bottom: 1px dashed rgba(120,120,120,.2);*/
+	}
+	a:hover{
+		color: rgba(255,120,130,1);
+		/*border-bottom-color: rgba(255,120,130,1);*/
 	}
 	h1,h2,h3{
 		text-align: center;
@@ -25,7 +39,7 @@
 	.container{
 		background: white;
 		display: inline-block;
-		width: 28%;
+		width: 30%;
 		height: 200px;
 		margin: 3px 1px;
 		vertical-align: top;
@@ -105,42 +119,50 @@
 
 
 	/* Restricting container */
-	.restrictor{
+	.restricted{
 		position: relative;
 		line-height: 20px;
+		overflow: hidden;
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path fill='rgba(120,120,120,.5)' d='M 0 0 L 1 0 0 1 0 0 z'/><path fill='rgba(120,120,120,.5)' d='M 0 5 L 5 0 5 1 1 5 0 5 z'/></svg>"), white;
 	}
-	.restrictor .placer{
+	.restricted:hover{
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path fill='rgba(50,50,50,1)' d='M 0 0 L 1 0 0 1 0 0 z'/><path fill='rgba(50,50,50,1)' d='M 0 5 L 5 0 5 1 1 5 0 5 z'/></svg>"), white;
+	}
+	.restricted .placer{
 		position: absolute;
 		top: 0;
 		right: 0;
 		bottom: 0;
 		left: 0;
 		margin: auto;
+		z-index: 2;
 	}
 
 	.limiter{
 		position: absolute;
-		opacity: .3;
-		min-height: 30px;
-		min-width: 30px;
-		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path fill='rgba(50,50,50,1)' d='M 0 0 L 1 0 0 1 0 0 z'/><path fill='rgba(50,50,50,1)' d='M 0 5 L 5 0 5 1 1 5 0 5 z'/></svg>"), white;
-	}
-	.container:hover .limiter{
-		opacity: 1;
+		border: 2px dashed rgba(128,128,128,.2);
+		background: white;
+		top: 10px;
+		left: 10px;
+		bottom: 10px;
+		right: 10px;
+		z-index: 1;
 	}
 	.limiter-v{
-		left: 0px;
-		right: 0px;
-		/*height: 1px;*/
-		top: 0px;
-		border-bottom: 2px dashed gray;
+		border-left: none!important;
+		border-right: none!important;
+		left: 0;
+		right: 0;
 	}
 	.limiter-h{
-		top: 0px;
-		bottom: 0px;
-		/*width: 1px;*/
-		left: 0px;
-		border-right: 2px dashed gray;
+		border-top: none!important;
+		border-bottom: none!important;
+		top: 0;
+		bottom: 0;
+	}
+	.restricted:hover .limiter{
+		opacity: 1;
+		border: 2px dashed rgba(128,128,128,1);
 	}
 </style>
 
@@ -149,9 +171,9 @@
 <!-- <script src="../node_modules/xxx/index.js"></script> -->
 <script src="../index.js" data-module-name="placer"></script>
 
-
+<!--
 <section id="static">
-	<h2>§&thinsp;1. Static position</h2>
+	<h2><a href="#static">§&thinsp;1.</a> Static position</h2>
 
 
 	<div class="container">
@@ -214,7 +236,7 @@
 
 
 <section id="relative">
-	<h2>§&thinsp;2. Relative position with paddings,<br/>margins and border</h2>
+	<h2><a href="#relative">§&thinsp;2.</a> Relative position with paddings,<br/>margins and border</h2>
 
 
 	<div class="container padding">
@@ -272,75 +294,75 @@
 		<div class="placer" title="side">bottom</div>
 	</div>
 </section>
-
+-->
 
 <section id="restriction">
-	<h2>§&thinsp;3. Restricting movement</h2>
+	<h2><a href="#restriction">§&thinsp;3.</a> Restricting movement</h2>
 
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within="parent" side="left" align="top" title="align">top</div>
+		<div class="placee" within=":parent .limiter" side="left" align="top" title="align">top</div>
 		<div class="placer" title="side">left</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within="parent" side="left" align="middle" title="align">middle</div>
+		<div class="placee" within=":parent .limiter" side="left" align="middle" title="align">middle</div>
 		<div class="placer" title="side">left</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within="parent" side="left" align="bottom" title="align">bottom</div>
+		<div class="placee" within=":parent .limiter" side="left" align="bottom" title="align">bottom</div>
 		<div class="placer" title="side">left</div>
 	</div>
 
 
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within="parent" side="right" align="top" title="align">top</div>
+		<div class="placee" within=":parent .limiter" side="right" align="top" title="align">top</div>
 		<div class="placer" title="side">right</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within="parent" side="right" align="middle" title="align">middle</div>
+		<div class="placee" within=":parent .limiter" side="right" align="middle" title="align">middle</div>
 		<div class="placer" title="side">right</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within="parent" side="right" align="bottom" title="align">bottom</div>
+		<div class="placee" within=":parent .limiter" side="right" align="bottom" title="align">bottom</div>
 		<div class="placer" title="side">right</div>
 	</div>
 
 
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within="parent" side="top" align="left" title="align">left</div>
+		<div class="placee" within=":parent .limiter" side="top" align="left" title="align">left</div>
 		<div class="placer" title="side">top</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within="parent" side="top" align="center" title="align">center</div>
+		<div class="placee" within=":parent .limiter" side="top" align="center" title="align">center</div>
 		<div class="placer" title="side">top</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within="parent" side="top" align="right" title="align">right</div>
+		<div class="placee" within=":parent .limiter" side="top" align="right" title="align">right</div>
 		<div class="placer" title="side">top</div>
 	</div>
 
 
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within="parent" side="bottom" align="left" title="align">left</div>
+		<div class="placee" within=":parent .limiter" side="bottom" align="left" title="align">left</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within="parent" side="bottom" align="center" title="align">center</div>
+		<div class="placee" within=":parent .limiter" side="bottom" align="center" title="align">center</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
-	<div class="container restrictor">
+	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within="parent" side="bottom" align="right" title="align">right</div>
+		<div class="placee" within=":parent .limiter" side="bottom" align="right" title="align">right</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 </section>
@@ -356,9 +378,15 @@ TODO: add looking up for place, corner cases
 
 <h2>Avoid</h2>
 TODO: add avoiding strategy
+
+<h2>Corner cases</h2>
+TODO: placer and placee in different containers
+TODO: placee is outside the static body
+TODO: fixed/static placer/placee position
 -->
 
 <script>
+	var matches = require('matches-selector');
 	var place = require('placer');
 	var Draggy = require('draggy');
 	var Resizable = require('resizable');
@@ -368,13 +396,11 @@ TODO: add avoiding strategy
 	var $resizables = document.querySelectorAll('.limiter');
 	for (var i = 0, l = $resizables.length, $resizable; i < l; i++){
 		$resizable = $resizables[i];
-		var dr = new Resizable($resizable, {
-		});
-		dr.on('resize', function(){
-			var container = this.element.parentNode;
-			container.style.paddingTop = this.element.style.height;
-			console.log(this.element.offsetHeight)
-			updateItem(container.querySelector('.placee'));
+		var res = new Resizable($resizable, {
+			resize: function(){
+				var container = this.element.parentNode;
+				updateItem(container.querySelector('.placee'));
+			}
 		});
 	}
 

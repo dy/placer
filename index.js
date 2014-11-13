@@ -11,7 +11,7 @@ module.exports = place;
 
 var type = require('mutypes');
 var css = require('mucss');
-var qEl = require('tiny-element');
+var q = require('query-relative');
 var softExtend = require('soft-extend');
 
 
@@ -59,7 +59,7 @@ var defaults = {
  */
 function place(element, options){
 	//ensure element
-	element = getElement(element);
+	element = q(element);
 
 	//inherit defaults
 	options = softExtend(options, defaults);
@@ -68,8 +68,8 @@ function place(element, options){
 	options.align = getAlign(options.align);
 
 	//ensure elements
-	options.relativeTo = getElement(options.relativeTo, element);
-	options.within = getElement(options.within, element);
+	options.relativeTo = q(options.relativeTo, element);
+	options.within = q(options.within, element);
 
 	//set the same position as the target’s one
 	var isAbsolute = false;
@@ -159,6 +159,7 @@ var placeBySide = {
 		includeBorders(parentRect, parent);
 
 		//place left (set css right because placee width may change)
+		//FIXME: we suppose that placee and placer are in the same container, but they can be in different
 		css(placee, {
 			right: parentRect.right - placerRect.left,
 			left: 'auto'
@@ -468,23 +469,4 @@ function getAlign(value){
 	var num = parseFloat(value);
 
 	return num !== undefined ? num : 0.5;
-}
-
-
-/** A tiny wrapper to get elements. Tries to recognize any query */
-function getElement(q, target){
-	var result;
-
-	if (!q) return;
-
-	//some predefined strings
-	if (/^parent/.test(q) || q === '..') {
-		result = target.parentNode;
-	}
-	else {
-		result = qEl(q);
-		if (result === null) result = q;
-	}
-
-	return result;
 }
