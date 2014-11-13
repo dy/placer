@@ -157,6 +157,7 @@ var placeBySide = {
 
 		//correct borders
 		includeBorders(parentRect, parent);
+		includeBorders(withinRect, opts.within);
 
 		//place left (set css right because placee width may change)
 		//FIXME: we suppose that placee and placer are in the same container, but they can be in different
@@ -197,6 +198,7 @@ var placeBySide = {
 
 		//correct borders
 		includeBorders(parentRect, placee.offsetParent);
+		includeBorders(withinRect, opts.within);
 
 		//place right
 		css(placee, {
@@ -235,6 +237,7 @@ var placeBySide = {
 
 		//correct borders
 		includeBorders(parentRect, placee.offsetParent);
+		includeBorders(withinRect, opts.within);
 
 		//place vertically properly
 		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
@@ -274,6 +277,7 @@ var placeBySide = {
 
 		//correct borders
 		includeBorders(parentRect, placee.offsetParent);
+		includeBorders(withinRect, opts.within);
 
 		//place horizontally properly
 		placeHorizontally(placee, placerRect, withinRect, parentRect, opts);
@@ -291,6 +295,7 @@ var placeBySide = {
 };
 
 /** include borders in offsets */
+//FIXME: think of outskirting borders detection to offsets (inner/outer offsets)
 function includeBorders(rect, el){
 	//correct borders
 	var borders = css.borders(el);
@@ -344,14 +349,20 @@ function placeHorizontally ( placee, placerRect, withinRect, parentRect, opts ){
 function placeVertically ( placee, placerRect, withinRect, parentRect, opts ) {
 	var height = placee.offsetHeight;
 	var margins = css.margins(placee);
-	var desirableTop = placerRect.top + placerRect.height*opts.align - height*opts.align - parentRect.top;
+
+	//desirable absolute top
+	var desirableAbsTop = placerRect.top + placerRect.height*opts.align - height*opts.align;
+
+	//top relative to the parent container
+	var desirableTop = desirableAbsTop - parentRect.top;
 
 	//if withinRect is defined - apply capping position
+	//FIXME
 	if (withinRect){
-		//if too close to the `withinRect.right` - set right = 0
-		if (height + desirableTop > withinRect.bottom) {
+		//if too close to the `withinRect.bottom` - set offset as the within.bottom
+		if (height + desirableAbsTop > withinRect.bottom) {
 			css(placee, {
-				bottom: 0,
+				bottom: - withinRect.bottom + parentRect.bottom,
 				top: 'auto'
 			});
 		}
