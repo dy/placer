@@ -314,11 +314,15 @@ function placeHorizontally ( placee, placerRect, withinRect, parentRect, opts ){
 	var width = placee.offsetWidth;
 	var margins = css.margins(placee);
 
-	var desirableLeft = placerRect.left + placerRect.width*opts.align - width*opts.align - parentRect.left;
+	//desirable absolute top
+	var desirableAbsLeft = placerRect.left + placerRect.width*opts.align - width*opts.align;
+
+	//top relative to the parent container
+	var desirableLeft = desirableAbsLeft - parentRect.left;
 
 	//if withinRect is defined - mind right border
 	if (withinRect) {
-		if (width + desirableLeft < withinRect.right){
+		if (width + desirableAbsLeft < withinRect.right) {
 			css(placee, {
 				left: Math.max(desirableLeft, withinRect.left - parentRect.left),
 				right: 'auto'
@@ -327,7 +331,7 @@ function placeHorizontally ( placee, placerRect, withinRect, parentRect, opts ){
 		//if too close to the withinRect right - set right = 0
 		else {
 			css(placee, {
-				right: 0,
+				right: -withinRect.right + parentRect.right,
 				left: 'auto'
 			});
 		}
@@ -360,7 +364,7 @@ function placeVertically ( placee, placerRect, withinRect, parentRect, opts ) {
 	//FIXME
 	if (withinRect){
 		//if too close to the `withinRect.bottom` - set offset as the within.bottom
-		if (height + desirableAbsTop > withinRect.bottom) {
+		if (desirableAbsTop + height > withinRect.bottom) {
 			css(placee, {
 				bottom: - withinRect.bottom + parentRect.bottom,
 				top: 'auto'
