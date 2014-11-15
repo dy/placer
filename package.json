@@ -4,7 +4,9 @@
   "description": "Place any element relative to any other element the way you define",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Open test/index.html to see tests\" && exit 1"
+    "test": "echo \"Open test/index.html to see tests\" && exit 1",
+    "build": "browserify --standalone place ./index.js > dist/placer.js",
+    "min": "ccjs dist/placer.js --language_in=ECMASCRIPT5 > dist/placer.min.js && cat dist/placer.min.js | gzip-size | pretty-bytes"
   },
   "repository": {
     "type": "git",
@@ -42,6 +44,8 @@
     "require-stub": "~1.x",
     "draggy": "*",
     "resizable": "~0.x",
-    "lifecycle-events": "~0.x"
+    "lifecycle-events": "~0.x",
+    "pretty-bytes": "~1.0.1",
+    "gzip-size": "~1.0.0"
   }
 }
