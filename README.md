@@ -1,6 +1,6 @@
 # Placer
 
-[![NPM](https://nodei.co/npm/placer.png](https://nodei.co/npm/placer/)
+[![NPM](https://nodei.co/npm/placer.png](https://nodei.co/npm/placer/)]
 
 Place any two DOM elements in a way you like. Mainly need for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
