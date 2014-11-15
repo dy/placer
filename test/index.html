@@ -1,5 +1,4 @@
 <!doctype html>
-
 <style type="text/css">
 	* {
 		box-sizing: border-box;
@@ -14,16 +13,17 @@
 		margin:0 auto 0;
 		min-width: 700px;
 		width: 80%;
+		max-width: 880px;
 		text-align: center;
 	}
 	a{
-		text-decoration: none;
 		color: #b8b8b8;
-		/*border-bottom: 1px dashed rgba(120,120,120,.2);*/
+		text-decoration: none;
+		border-bottom: 1px solid rgba(130,130,130,.3);
 	}
 	a:hover{
 		color: rgba(255,120,130,1);
-		/*border-bottom-color: rgba(255,120,130,1);*/
+		border-bottom-color: rgba(255,120,130,.6);
 	}
 	h1,h2,h3 {
 		text-align: center;
@@ -36,6 +36,15 @@
 		margin-bottom: 1.2em;
 		text-shadow: 0 1px 0 white;
 	}
+	h1{
+		text-transform: none;
+		margin: 3rem 0 -1rem;
+		font-size: 2.8em;
+	}
+	a.section-link{
+		text-decoration: none;
+		border-bottom: none;
+	}
 	h3 {
 		font-size: 1.6em;
 		text-transform: none;
@@ -44,6 +53,12 @@
 		margin-bottom: 1.6em;
 	}
 	h2 + h3 {
+		margin-top: -.9em;
+	}
+	p{
+		margin: 1.6em;
+	}
+	h2 + p{
 		margin-top: -.9em;
 	}
 	.container{
@@ -229,15 +244,38 @@
 	[hidden] {
 		display: none!important;
 	}
+
+	footer{
+		margin: 2em;
+		text-align: center;
+	}
+
+	.splashscreen{
+		position:fixed;
+		top:0;
+		left:0;
+		bottom:0;
+		right:0;
+		background:white;
+		z-index:999;
+		padding:1rem;
+		transition: .15s linear opacity;
+	}
 </style>
+
+
+<div class='splashscreen'>Loading requirements...</div>
 
 
 <script src="../node_modules/require-stub/index.js"></script>
 <script src="../index.js" data-module-name="placer"></script>
 
 
+<h1><a href="http://github.com/dfcreative/placer"><em>Placer.js</em></a> tests</h1>
+
+
 <section id="static">
-	<h2><a href="#static">§&thinsp;1.</a> Static position</h2>
+	<h2><a class="section-link" href="#static">§&thinsp;1.</a> Static position</h2>
 
 
 	<div class="container">
@@ -300,7 +338,7 @@
 
 
 <section id="relative">
-	<h2><a href="#relative">§&thinsp;2.</a> Relative position with paddings,<br/>margins and border</h2>
+	<h2><a class="section-link" href="#relative">§&thinsp;2.</a> Relative position with paddings,<br/>margins and border</h2>
 
 
 	<div class="container container-padding">
@@ -361,7 +399,7 @@
 
 
 <section id="restriction">
-	<h2><a href="#restriction">§&thinsp;3.</a> Restricted area</h2>
+	<h2><a class="section-link" href="#restriction">§&thinsp;3.</a> Restricted area</h2>
 
 	<div class="container container-restricted">
 		<div class="limiter limiter-v"></div>
@@ -433,7 +471,7 @@
 
 
 <section id="centered">
-	<h2><a href="#centered">§&thinsp;4.</a> Centered placement</h2>
+	<h2><a class="section-link" href="#centered">§&thinsp;4.</a> Centered placement</h2>
 
 	<h3>4.1. Relative to a target</h3>
 
@@ -507,7 +545,7 @@
 
 
 <section id="dynamic">
-	<h2><a href="#dynamic">§&thinsp;5.</a> Automatically choose side</h2>
+	<h2><a class="section-link" href="#dynamic">§&thinsp;5.</a> Automatically change side</h2>
 
 	<div class="container container-restricted">
 		<div class="limiter"></div>
@@ -579,8 +617,8 @@
 
 
 <section id="avoid">
-	<h2><a href="#avoid">§&thinsp;6.</a> Avoid elements [WIP]</h2>
-	<p>Waiting for use-case. Post an issue, if you found one.</p>
+	<h2><a class="section-link" href="#avoid">§&thinsp;6.</a> Avoid elements (pending)</h2>
+	<p>Looking for a use-case. <a href="https://github.com/dfcreative/placer/issues/new">Request this feature</a>, if you need this implemented.</p>
 
 	<div class="container container-avoid">
 		<div class="avoid"></div>
@@ -650,6 +688,10 @@
 	</div>
 </section>
 
+
+<footer>
+Made by <a href="http://github.com/dfcreative">Dmitry Ivanov</a>.
+</footer>
 
 
 <!--
@@ -724,4 +766,15 @@ TODO: browsers
 	update();
 
 	window.addEventListener('resize', update);
+
+
+
+	//remove splashScreen
+	window.addEventListener('load', function(){
+		var ss = document.querySelector('.splashscreen');
+		ss.style.opacity = 0;
+		setTimeout(function(){
+			ss.parentNode.removeChild(ss);
+		},320);
+	});
 </script>
