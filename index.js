@@ -7,7 +7,7 @@ module.exports = place;
 
 
 //TODO: use translate3d instead of absolute repositioning
-
+//TODO: implement avoiding strategy (at least one use-case)
 
 var type = require('mutypes');
 var css = require('mucss');
@@ -72,6 +72,10 @@ function place(element, options){
 	//ensure elements
 	options.relativeTo = options.relativeTo && q(options.relativeTo, element) || win;
 	options.within = options.within && q(options.within, element);
+
+
+	//TODO: query avoidables
+	// options.avoid = q(options.avoid, element, true);
 
 
 	//set the same position as the target’s one or absolute
@@ -267,13 +271,29 @@ function getBestSide(placee, opts) {
 		placeeRect = css.offsets(placee),
 		placerRect = css.offsets(opts.relativeTo);
 
+	includeBorders(withinRect, opts.within);
+
+	//rect of "hot" areas
+	var hotRect = {
+		top: placerRect.top - withinRect.top,
+		bottom: withinRect.bottom - placerRect.bottom,
+		left: placerRect.left - withinRect.left,
+		right: withinRect.right - placerRect.right
+	};
+
 	//rect of available spaces
 	var availSpace = {
-		top: placerRect.top - withinRect.top - placeeRect.height,
-		bottom: withinRect.bottom - placerRect.bottom - placeeRect.height,
-		left: placerRect.left - withinRect.left - placeeRect.width,
-		right: withinRect.right - placerRect.right - placeeRect.width
+		top: hotRect.top - placeeRect.height,
+		bottom: hotRect.bottom - placeeRect.height,
+		left: hotRect.left - placeeRect.width,
+		right: hotRect.right - placeeRect.width
 	};
+
+	//TODO:
+	//if at least one avoidable el within the hot area
+	//get specific limits for the side (besides the `within` restrictor)
+	//and if limits are too tight, ignore the side
+
 
 	//if fits initial side, return it
 	if (availSpace[initSide] >= 0) return initSide;
