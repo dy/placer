@@ -1,4 +1,7 @@
-# Placer [![npm version](https://badge.fury.io/js/placer.svg)](http://badge.fury.io/js/placer)
+# Placer
+
+[![NPM](https://nodei.co/npm/placer.png](https://nodei.co/npm/placer/)
+
 Place any two DOM elements in a way you like. Mainly need for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
 [Demo & tests](http://add_url_here)
@@ -8,7 +11,7 @@ Place any two DOM elements in a way you like. Mainly need for dropdowns, tooltip
 
 You need browserify or alike to use _placer_.
 
-[![NPM](https://nodei.co/npm/placer.png?mini=true)](https://nodei.co/npm/placer/)
+`$ npm install placer`
 
 ```js
 var place = require('placer');
