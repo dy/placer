@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Open test/index.html to see tests\" && exit 1",
     "build": "browserify --standalone place ./index.js > dist/placer.js",
-    "min": "ccjs dist/placer.js --language_in=ECMASCRIPT5 > dist/placer.min.js && cat dist/placer.min.js | gzip-size | pretty-bytes"
+    "min": "ccjs dist/placer.js --language_in=ECMASCRIPT5 > dist/placer.min.js && cat dist/placer.min.js | gzip-size | pretty-bytes",
+    "build-dev": "browserify -r draggy -r query-relative -r resizable -r ./index.js:placer > test/placer.dev.js"
   },
   "repository": {
     "type": "git",
