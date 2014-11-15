@@ -264,9 +264,6 @@
 </style>
 
 
-<div class='splashscreen'>Loading requirements...</div>
-
-
 <script src="../node_modules/require-stub/index.js"></script>
 <script src="../index.js" data-module-name="placer"></script>
 
@@ -766,15 +763,4 @@ TODO: browsers
 	update();
 
 	window.addEventListener('resize', update);
-
-
-
-	//remove splashScreen
-	window.addEventListener('load', function(){
-		var ss = document.querySelector('.splashscreen');
-		ss.style.opacity = 0;
-		setTimeout(function(){
-			ss.parentNode.removeChild(ss);
-		},320);
-	});
 </script>
