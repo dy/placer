@@ -1,8 +1,8 @@
 # Placer [![npm version](https://badge.fury.io/js/placer.svg)](http://badge.fury.io/js/placer)
-
 Place any two DOM elements in a way you like. Mainly need for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
-[T E S T S](http://add_url_here)
+[Demo & tests](http://add_url_here)
+
 
 ## Usage
 
