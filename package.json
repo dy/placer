@@ -41,6 +41,7 @@
   "devDependencies": {
     "require-stub": "~1.x",
     "draggy": "*",
-    "resizable": "~0.1.0"
+    "resizable": "~0.x",
+    "lifecycle-events": "~0.x"
   }
 }

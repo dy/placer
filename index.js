@@ -67,7 +67,7 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	options.relativeTo = options.relativeTo && q(options.relativeTo, element);
+	options.relativeTo = options.relativeTo && q(options.relativeTo, element) || win;
 	options.within = options.within && q(options.within, element);
 
 	//set the same position as the target’s one
@@ -133,6 +133,7 @@ var placeBySide = {
 			else if (/top|bottom|middle/.test(al)) al = [.5, al];
 			else al = [al, .5];
 		}
+
 		align([opts.relativeTo, placee], al);
 
 
