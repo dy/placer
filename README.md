@@ -5,7 +5,7 @@
 
 Place any two DOM elements in a way you like. Mainly need for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
-[Demo & tests](https://rawgit.com/dfcreative/placer/master/test/index.html)
+[Demo & tests](https://cdn.rawgit.com/dfcreative/placer/master/test/index.html)
 
 
 ## Usage
