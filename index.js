@@ -5,7 +5,8 @@
 */
 module.exports = place;
 
-
+//TODO: fix for IE
+//TODO: fix resizable/draggable tests in firefox
 //TODO: use translate3d instead of absolute repositioning
 //TODO: implement avoiding strategy (at least one use-case)
 
