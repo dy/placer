@@ -48,7 +48,7 @@ var defaults = {
 	within: undefined,
 
 	//look for better blacement, if doesn’t fit
-	seekPosition: true
+	findBestSide: true
 };
 
 
@@ -84,7 +84,7 @@ function place(element, options){
 
 
 	//else place according to the position
-	var side = options.seekPosition && options.within ? getBestSide(element, options) : options.side;
+	var side = options.findBestSide && options.within ? getBestSide(element, options) : options.side;
 
 	placeBySide[side](element, options);
 

@@ -364,72 +364,72 @@
 
 
 <section id="restriction">
-	<h2><a href="#restriction">§&thinsp;3.</a> Within container</h2>
+	<h2><a href="#restriction">§&thinsp;3.</a> Within container, keep one side</h2>
 
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="left" align="top" title="align">top</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="left" align="top" title="align">top</div>
 		<div class="placer" title="side">left</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="left" align="middle" title="align">middle</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="left" align="middle" title="align">middle</div>
 		<div class="placer" title="side">left</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="left" align="bottom" title="align">bottom</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="left" align="bottom" title="align">bottom</div>
 		<div class="placer" title="side">left</div>
 	</div>
 
 
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="right" align="top" title="align">top</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="right" align="top" title="align">top</div>
 		<div class="placer" title="side">right</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="right" align="middle" title="align">middle</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="right" align="middle" title="align">middle</div>
 		<div class="placer" title="side">right</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="right" align="bottom" title="align">bottom</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="right" align="bottom" title="align">bottom</div>
 		<div class="placer" title="side">right</div>
 	</div>
 
 
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="top" align="left" title="align">left</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="top" align="left" title="align">left</div>
 		<div class="placer" title="side">top</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="top" align="center" title="align">center</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="top" align="center" title="align">center</div>
 		<div class="placer" title="side">top</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="top" align="right" title="align">right</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="top" align="right" title="align">right</div>
 		<div class="placer" title="side">top</div>
 	</div>
 
 
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="bottom" align="left" title="align">left</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="bottom" align="left" title="align">left</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="bottom" align="center" title="align">center</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="bottom" align="center" title="align">center</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" seek-position="false" within=":parent .limiter" side="bottom" align="right" title="align">right</div>
+		<div class="placee" find-best-side="false" within=":parent .limiter" side="bottom" align="right" title="align">right</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 </section>
@@ -583,10 +583,6 @@
 
 
 <!--
-<h2>Dynamic position</h2>
-TODO: add looking up for place, corner cases
-
-
 <h2>Avoid</h2>
 TODO: add avoiding strategy
 
@@ -637,7 +633,7 @@ TODO: browsers
 			avoid: $placee.getAttribute('avoid'),
 			align: $placee.getAttribute('align'),
 			within: $placee.getAttribute('within'),
-			seekPosition: $placee.getAttribute('seek-position') === 'false' ? false : true,
+			findBestSide: $placee.getAttribute('find-best-side') === 'false' ? false : true,
 			side: $placee.getAttribute('side')
 		});
 	}
