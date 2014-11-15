@@ -82,13 +82,13 @@
 	}
 	.placee{
 		display: block;
-		width: 80px;
-		height: 70px;
-		line-height: 78px;
+		width: 70px;
+		height: 60px;
+		line-height: 68px;
 		background: rgb(162, 255, 199);
 		color: rgba(81, 104, 148, .9);
 		text-align: center;
-		z-index: 2;
+		z-index: 3;
 		white-space: nowrap;
 		border: 2px solid rgb(112, 235, 159);
 	}
@@ -131,6 +131,9 @@
 	}
 	.placer:hover, .placee:hover{
 		z-index: 99!important;
+	}
+	.placer-small{
+		width: 50px;
 	}
 
 
@@ -298,6 +301,7 @@
 	</div>
 </section>
 
+
 <section id="relative">
 	<h2><a href="#relative">§&thinsp;2.</a> Relative position with paddings,<br/>margins and border</h2>
 
@@ -358,73 +362,74 @@
 	</div>
 </section>
 
+
 <section id="restriction">
 	<h2><a href="#restriction">§&thinsp;3.</a> Within container</h2>
 
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within=":parent .limiter" side="left" align="top" title="align">top</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="left" align="top" title="align">top</div>
 		<div class="placer" title="side">left</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within=":parent .limiter" side="left" align="middle" title="align">middle</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="left" align="middle" title="align">middle</div>
 		<div class="placer" title="side">left</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within=":parent .limiter" side="left" align="bottom" title="align">bottom</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="left" align="bottom" title="align">bottom</div>
 		<div class="placer" title="side">left</div>
 	</div>
 
 
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within=":parent .limiter" side="right" align="top" title="align">top</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="right" align="top" title="align">top</div>
 		<div class="placer" title="side">right</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within=":parent .limiter" side="right" align="middle" title="align">middle</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="right" align="middle" title="align">middle</div>
 		<div class="placer" title="side">right</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
-		<div class="placee" within=":parent .limiter" side="right" align="bottom" title="align">bottom</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="right" align="bottom" title="align">bottom</div>
 		<div class="placer" title="side">right</div>
 	</div>
 
 
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within=":parent .limiter" side="top" align="left" title="align">left</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="top" align="left" title="align">left</div>
 		<div class="placer" title="side">top</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within=":parent .limiter" side="top" align="center" title="align">center</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="top" align="center" title="align">center</div>
 		<div class="placer" title="side">top</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within=":parent .limiter" side="top" align="right" title="align">right</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="top" align="right" title="align">right</div>
 		<div class="placer" title="side">top</div>
 	</div>
 
 
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within=":parent .limiter" side="bottom" align="left" title="align">left</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="bottom" align="left" title="align">left</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within=":parent .limiter" side="bottom" align="center" title="align">center</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="bottom" align="center" title="align">center</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 	<div class="container restricted">
 		<div class="limiter limiter-h"></div>
-		<div class="placee" within=":parent .limiter" side="bottom" align="right" title="align">right</div>
+		<div class="placee" seek-position="false" within=":parent .limiter" side="bottom" align="right" title="align">right</div>
 		<div class="placer" title="side">bottom</div>
 	</div>
 </section>
@@ -505,6 +510,78 @@
 
 
 
+<section id="dynamic">
+	<h2><a href="#dynamic">§&thinsp;5.</a> Dynamic position</h2>
+
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="left" align="top" title="align">top</div>
+		<div class="placer placer-small" title="side">left</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="left" align="middle" title="align">middle</div>
+		<div class="placer placer-small" title="side">left</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="left" align="bottom" title="align">bottom</div>
+		<div class="placer placer-small" title="side">left</div>
+	</div>
+
+
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="right" align="top" title="align">top</div>
+		<div class="placer placer-small" title="side">right</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="right" align="middle" title="align">middle</div>
+		<div class="placer placer-small" title="side">right</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="right" align="bottom" title="align">bottom</div>
+		<div class="placer placer-small" title="side">right</div>
+	</div>
+
+
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="top" align="left" title="align">left</div>
+		<div class="placer placer-small" title="side">top</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="top" align="center" title="align">center</div>
+		<div class="placer placer-small" title="side">top</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="top" align="right" title="align">right</div>
+		<div class="placer placer-small" title="side">top</div>
+	</div>
+
+
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="bottom" align="left" title="align">left</div>
+		<div class="placer placer-small" title="side">bottom</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="bottom" align="center" title="align">center</div>
+		<div class="placer placer-small" title="side">bottom</div>
+	</div>
+	<div class="container restricted">
+		<div class="limiter"></div>
+		<div class="placee" within=":parent .limiter" side="bottom" align="right" title="align">right</div>
+		<div class="placer placer-small" title="side">bottom</div>
+	</div>
+</section>
+
+
 <!--
 <h2>Dynamic position</h2>
 TODO: add looking up for place, corner cases
@@ -560,6 +637,7 @@ TODO: browsers
 			avoid: $placee.getAttribute('avoid'),
 			align: $placee.getAttribute('align'),
 			within: $placee.getAttribute('within'),
+			seekPosition: $placee.getAttribute('seek-position') === 'false' ? false : true,
 			side: $placee.getAttribute('side')
 		});
 	}
