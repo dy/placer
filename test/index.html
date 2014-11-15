@@ -37,6 +37,7 @@
 		text-shadow: 0 1px 0 white;
 	}
 	h3 {
+		font-size: 1.6em;
 		text-transform: none;
 		letter-spacing: 0;
 		margin-top: 2.4em;
@@ -203,6 +204,27 @@
 		height: 100%;
 		background: rgba(255,255,255,.8);
 	}
+	.container-label-center{
+		position: relative;
+	}
+	.container-label-center:before{
+		content: 'side';
+		color: rgba(91, 104, 118, .7);
+		left:0;
+		right: 0;
+		top: -5px;
+		position: absolute;
+		letter-spacing: 0;
+		text-transform: none;
+	}
+	.container-label-center:after{
+		content: 'center';
+		position: absolute;
+		color: rgba(91, 104, 118, .7);
+		left:0;
+		right: 0;
+		top: 8px;
+	}
 
 	[hidden] {
 		display: none!important;
@@ -337,7 +359,7 @@
 </section>
 
 <section id="restriction">
-	<h2><a href="#restriction">§&thinsp;3.</a> Restricting movement</h2>
+	<h2><a href="#restriction">§&thinsp;3.</a> Within container</h2>
 
 	<div class="container restricted">
 		<div class="limiter limiter-v"></div>
@@ -411,7 +433,7 @@
 <section id="centered">
 	<h2><a href="#centered">§&thinsp;4.</a> Centered</h2>
 
-	<h3>Relative to the placer</h3>
+	<h3>Relative to target</h3>
 
 		<div class="container">
 			<div class="placee" relative-to=":next" side="center" align="top" title="align">top</div>
@@ -450,33 +472,33 @@
 			<div class="placer" title="side">center</div>
 		</div>
 
-	<h3>Relative to the container</h3>
+	<h3>Relative to parent</h3>
 
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="top" title="align">top</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="middle" title="align">middle</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="bottom" title="align">bottom</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="left" title="align">left</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="center" title="align">center</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="right" title="align">right</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="0,0" title="align">0, 0</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align=".3,.8" title="align">0.3, 0.8</div>
 		</div>
-		<div class="container">
+		<div class="container container-label-center">
 			<div class="placee" relative-to=":parent" side="center" align="1,1" title="align">1, 1</div>
 		</div>
 </section>
@@ -495,6 +517,8 @@ TODO: add avoiding strategy
 TODO: placer and placee in different containers
 TODO: placee is outside the static body
 TODO: fixed/static placer/placee position
+TODO: relativeTo/within window
+TODO: browsers
 -->
 
 

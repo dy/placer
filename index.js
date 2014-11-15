@@ -144,10 +144,10 @@ var placeBySide = {
 	left: function(placee, opts){
 		// console.log('place left')
 
-		//get relativeTo & within rectangles
+		var parent = placee.offsetParent;
+
 		var placerRect = getRect(opts.relativeTo);
-		var withinRect = getRect(opts.within);
-		var parentRect = getRect(placee.offsetParent);
+		var parentRect = getRect(parent);
 
 
 		//check if there is enough place for placing from the left
@@ -162,15 +162,11 @@ var placeBySide = {
 		// 	}
 		// }
 
-		//add corrective if parent is body with static positioning
-		var parent = placee.offsetParent;
 
 		//correct borders
 		includeBorders(parentRect, parent);
-		opts.within && includeBorders(withinRect, opts.within);
 
 		//place left (set css right because placee width may change)
-		//FIXME: we suppose that placee and placer are in the same container, but they can be in different
 		css(placee, {
 			right: parentRect.right - placerRect.left,
 			left: 'auto'
@@ -178,6 +174,10 @@ var placeBySide = {
 
 		//place vertically properly
 		align([opts.relativeTo, placee], [null, opts.align]);
+
+		//apply limits
+		if (opts.within) trimPositionY(placee, opts.within, parentRect);
+
 
 		//upd options
 		opts.side = 'left';
@@ -189,9 +189,7 @@ var placeBySide = {
 
 		//get relativeTo & within rectangles
 		var placerRect = getRect(opts.relativeTo);
-		var withinRect = getRect(opts.within);
 		var parentRect = getRect(placee.offsetParent);
-
 
 
 		//check if there is enough place for placing bottom
@@ -209,7 +207,7 @@ var placeBySide = {
 
 		//correct borders
 		includeBorders(parentRect, placee.offsetParent);
-		opts.within && includeBorders(withinRect, opts.within);
+
 
 		//place right
 		css(placee, {
@@ -217,8 +215,14 @@ var placeBySide = {
 			right: 'auto',
 		});
 
+
 		//place vertically properly
 		align([opts.relativeTo, placee], [null, opts.align]);
+
+
+		//apply limits
+		if (opts.within) trimPositionY(placee, opts.within, parentRect);
+
 
 		//upd options
 		opts.side = 'right';
@@ -227,9 +231,8 @@ var placeBySide = {
 	top: function(placee, opts){
 		// console.log('place top');
 
-		//get relativeTo & within rectangles
+		var parent = placee.offsetParent;
 		var placerRect = getRect(opts.relativeTo);
-		var withinRect = getRect(opts.within);
 		var parentRect = getRect(placee.offsetParent);
 
 
@@ -246,24 +249,23 @@ var placeBySide = {
 		// }
 
 
-		var parent = placee.offsetParent;
-
 		//correct borders
-		includeBorders(parentRect, placee.offsetParent);
-		opts.within && includeBorders(withinRect, opts.within);
+		includeBorders(parentRect, parent);
 
 
 		//place vertically top-side
-		var bottom = parentRect.bottom - placerRect.top;
-
 		css(placee, {
-			bottom: bottom,
+			bottom: parentRect.bottom - placerRect.top,
 			top: 'auto'
 		});
 
 
 		//place horizontally properly
 		align([opts.relativeTo, placee], [opts.align]);
+
+
+		//apply limits
+		if (opts.within) trimPositionX(placee, opts.within, parentRect);
 
 
 		//upd options
@@ -275,7 +277,6 @@ var placeBySide = {
 
 		//get relativeTo & within rectangles
 		var placerRect = getRect(opts.relativeTo);
-		var withinRect = getRect(opts.within);
 		var parentRect = getRect(placee.offsetParent);
 
 		//check if there is enough place for placing bottom
@@ -292,7 +293,6 @@ var placeBySide = {
 
 		//correct borders
 		includeBorders(parentRect, placee.offsetParent);
-		opts.within && includeBorders(withinRect, opts.within);
 
 
 		//place bottom
@@ -304,6 +304,10 @@ var placeBySide = {
 
 		//place horizontally properly
 		align([opts.relativeTo, placee], [opts.align]);
+
+
+		//apply limits
+		if (opts.within) trimPositionX(placee, opts.within, parentRect);
 
 
 		//upd options
@@ -324,6 +328,46 @@ function includeBorders(rect, el){
 	return rect;
 }
 
+
+/** apply limits rectangle to the position of an element */
+function trimPositionY(placee, within, parentRect){
+	var placeeRect = css.offsets(placee);
+	var withinRect = getRect(within);
+	includeBorders(withinRect, within);
+
+	if (withinRect.top > placeeRect.top) {
+		css(placee, {
+			top: withinRect.top - parentRect.top,
+			bottom: 'auto'
+		});
+	}
+
+	else if (withinRect.bottom < placeeRect.bottom) {
+		css(placee, {
+			top: 'auto',
+			bottom: parentRect.bottom - withinRect.bottom
+		});
+	}
+}
+function trimPositionX(placee, within, parentRect){
+	var placeeRect = css.offsets(placee);
+	var withinRect = getRect(within);
+	includeBorders(withinRect, within);
+
+	if (withinRect.left > placeeRect.left) {
+		css(placee, {
+			left: withinRect.left - parentRect.left,
+			right: 'auto'
+		});
+	}
+
+	else if (withinRect.right < placeeRect.right) {
+		css(placee, {
+			left: 'auto',
+			right: parentRect.right - withinRect.right
+		});
+	}
+}
 
 
 /**
