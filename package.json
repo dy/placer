@@ -4,10 +4,10 @@
   "description": "Place any element relative to any other element the way you define",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Open test/index.html to see tests\" && exit 1",
+    "test": "npm run build-test && echo \"Launch HTTP-server for test/index.html to see tests\"",
     "build": "browserify --standalone place ./index.js > dist/placer.js",
     "min": "ccjs dist/placer.js --language_in=ECMASCRIPT5 > dist/placer.min.js && cat dist/placer.min.js | gzip-size | pretty-bytes",
-    "build-dev": "browserify -r draggy -r query-relative -r resizable -r ./index.js:placer > test/placer.dev.js"
+    "build-test": "browserify -r draggy -r query-relative -r resizable -r ./index.js:placer > test/test.js"
   },
   "repository": {
     "type": "git",

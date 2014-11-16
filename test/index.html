@@ -264,9 +264,21 @@
 </style>
 
 
-<!--<script src="../node_modules/require-stub/index.js"></script>
+<script>
+	//contains polyfill
+	Node.prototype.contains = function(el){
+		while (el = el.parentNode) {
+			if (el === this) return true;
+		}
+		return false;
+	}
+</script>
+<script src="https://rawgit.com/Polymer/WeakMap/master/weakmap.js"></script>
+
+
+<!-- <script src="../node_modules/require-stub/index.js"></script>
 <script src="../index.js" data-module-name="placer"></script> -->
-<script src="placer.dev.js"></script>
+<script src="test.js"></script>
 
 
 <h1><a href="http://github.com/dfcreative/placer"><em>Placer.js</em></a> tests</h1>
@@ -703,10 +715,10 @@ TODO: browsers
 
 
 <script>
+	var q = require('query-relative');
 	var place = require('placer');
 	var Draggy = require('draggy');
 	var Resizable = require('resizable');
-	var q = require('query-relative');
 
 
 	//init all resizables
