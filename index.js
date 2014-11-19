@@ -5,10 +5,12 @@
 */
 module.exports = place;
 
-//TODO: fix for IE
+//TODO: fix draggy in safari
+//TODO: fix for IE8
 //TODO: fix resizable/draggable tests in firefox
-//TODO: use translate3d instead of absolute repositioning
+//TODO: use translate3d instead of absolute repositioning (option?)
 //TODO: implement avoiding strategy (at least one use-case)
+//TODO: enhance best-side strategy: choose the most closest side
 
 var type = require('mutypes');
 var css = require('mucss');
