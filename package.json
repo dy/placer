@@ -40,7 +40,8 @@
     "query-relative": "~1.x",
     "aligner": "0.x",
     "mumath": "~0.x",
-    "soft-extend": "~0.x"
+    "soft-extend": "~0.x",
+    "mutype": "~0.2.3"
   },
   "devDependencies": {
     "require-stub": "~1.x",

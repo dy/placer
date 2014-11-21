@@ -12,7 +12,7 @@ module.exports = place;
 //TODO: implement avoiding strategy (at least one use-case)
 //TODO: enhance best-side strategy: choose the most closest side
 
-var type = require('mutypes');
+var type = require('mutype');
 var css = require('mucss');
 var q = require('query-relative');
 var softExtend = require('soft-extend');
@@ -73,12 +73,12 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	options.relativeTo = options.relativeTo && q(options.relativeTo, element) || win;
-	options.within = options.within && q(options.within, element);
+	options.relativeTo = options.relativeTo && q(element, options.relativeTo) || win;
+	options.within = options.within && q(element, options.within);
 
 
 	//TODO: query avoidables
-	// options.avoid = q(options.avoid, element, true);
+	// options.avoid = q(element, options.avoid, true);
 
 
 	//set the same position as the target’s one or absolute
