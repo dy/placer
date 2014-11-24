@@ -5,11 +5,12 @@
 */
 module.exports = place;
 
+//TODO: include margins for within calcs
 //TODO: fix draggy in safari
 //TODO: fix for IE8
 //TODO: fix resizable/draggable tests in firefox
 //TODO: use translate3d instead of absolute repositioning (option?)
-//TODO: implement avoiding strategy (at least one use-case)
+//TODO: implement avoiding strategy (graphic editors use-case when you need to avoid placing over selected elements)
 //TODO: enhance best-side strategy: choose the most closest side
 
 var type = require('mutype');
@@ -75,7 +76,6 @@ function place(element, options){
 	//ensure elements
 	options.relativeTo = options.relativeTo && q(element, options.relativeTo) || win;
 	options.within = options.within && q(element, options.within);
-
 
 	//TODO: query avoidables
 	// options.avoid = q(element, options.avoid, true);
@@ -150,7 +150,7 @@ var placeBySide = {
 		var parentRect = getParentRect(parent);
 
 		//correct borders
-		includeBorders(parentRect, parent);
+		contractRect(parentRect, css.borders(parent));
 
 
 		//place left (set css right because placee width may change)
@@ -180,7 +180,7 @@ var placeBySide = {
 		var parentRect = getParentRect(placee.offsetParent);
 
 		//correct borders
-		includeBorders(parentRect, placee.offsetParent);
+		contractRect(parentRect, css.borders(placee.offsetParent));
 
 
 		//place right
@@ -211,7 +211,7 @@ var placeBySide = {
 
 
 		//correct borders
-		includeBorders(parentRect, parent);
+		contractRect(parentRect, css.borders(parent));
 
 
 		//place vertically top-side
@@ -242,7 +242,7 @@ var placeBySide = {
 
 
 		//correct borders
-		includeBorders(parentRect, placee.offsetParent);
+		contractRect(parentRect, css.borders(placee.offsetParent));
 
 
 		//place bottom
@@ -274,7 +274,7 @@ function getBestSide(placee, opts) {
 		placeeRect = css.offsets(placee),
 		placerRect = css.offsets(opts.relativeTo);
 
-	includeBorders(withinRect, opts.within);
+	contractRect(withinRect, css.borders(opts.within));
 
 	//rect of "hot" areas
 	var hotRect = {
@@ -316,15 +316,13 @@ function getBestSide(placee, opts) {
 
 
 
-/** include borders in offsets */
-//FIXME: think of outskirting borders detection to offsets (inner/outer offsets)
-function includeBorders(rect, el){
-	//correct borders
-	var borders = css.borders(el);
-	rect.left += borders.left;
-	rect.right -= borders.right;
-	rect.bottom -= borders.bottom;
-	rect.top += borders.top;
+/** contract rect 1 with rect 2 */
+function contractRect(rect, rect2){
+	//correct rect2
+	rect.left += rect2.left;
+	rect.right -= rect2.right;
+	rect.bottom -= rect2.bottom;
+	rect.top += rect2.top;
 	return rect;
 }
 
@@ -333,16 +331,18 @@ function includeBorders(rect, el){
 function trimPositionY(placee, within, parentRect){
 	var placeeRect = css.offsets(placee);
 	var withinRect = css.offsets(within);
-	includeBorders(withinRect, within);
+	var placeeMargins = css.margins(placee);
 
-	if (withinRect.top > placeeRect.top) {
+	contractRect(withinRect, css.borders(within));
+
+	if (withinRect.top > placeeRect.top - placeeMargins.top) {
 		css(placee, {
 			top: withinRect.top - parentRect.top,
 			bottom: 'auto'
 		});
 	}
 
-	else if (withinRect.bottom < placeeRect.bottom) {
+	else if (withinRect.bottom < placeeRect.bottom + placeeMargins.bottom) {
 		css(placee, {
 			top: 'auto',
 			bottom: parentRect.bottom - withinRect.bottom
@@ -352,16 +352,18 @@ function trimPositionY(placee, within, parentRect){
 function trimPositionX(placee, within, parentRect){
 	var placeeRect = css.offsets(placee);
 	var withinRect = css.offsets(within);
-	includeBorders(withinRect, within);
+	var placeeMargins = css.margins(placee);
 
-	if (withinRect.left > placeeRect.left) {
+	contractRect(withinRect, css.borders(within));
+
+	if (withinRect.left > placeeRect.left - placeeMargins.left) {
 		css(placee, {
 			left: withinRect.left - parentRect.left,
 			right: 'auto'
 		});
 	}
 
-	else if (withinRect.right < placeeRect.right) {
+	else if (withinRect.right < placeeRect.right + placeeMargins.right) {
 		css(placee, {
 			left: 'auto',
 			right: parentRect.right - withinRect.right
