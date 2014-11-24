@@ -5,7 +5,6 @@
 */
 module.exports = place;
 
-//TODO: include margins for within calcs
 //TODO: fix draggy in safari
 //TODO: fix for IE8
 //TODO: fix resizable/draggable tests in firefox
@@ -276,7 +275,9 @@ function getBestSide(placee, opts) {
 
 	contractRect(withinRect, css.borders(opts.within));
 
-	//rect of "hot" areas
+	var placeeMargins = css.margins(placee);
+
+	//rect of "hot" area (available spaces from placer to container)
 	var hotRect = {
 		top: placerRect.top - withinRect.top,
 		bottom: withinRect.bottom - placerRect.bottom,
@@ -286,10 +287,10 @@ function getBestSide(placee, opts) {
 
 	//rect of available spaces
 	var availSpace = {
-		top: hotRect.top - placeeRect.height,
-		bottom: hotRect.bottom - placeeRect.height,
-		left: hotRect.left - placeeRect.width,
-		right: hotRect.right - placeeRect.width
+		top: hotRect.top - placeeRect.height - placeeMargins.top - placeeMargins.bottom,
+		bottom: hotRect.bottom - placeeRect.height - placeeMargins.top - placeeMargins.bottom,
+		left: hotRect.left - placeeRect.width - placeeMargins.left - placeeMargins.right,
+		right: hotRect.right - placeeRect.width - placeeMargins.left - placeeMargins.right
 	};
 
 	//TODO:
