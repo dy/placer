@@ -141,7 +141,145 @@ function numerify(value){
 
 	return value;
 }
-},{"mucss":15,"mumath":16}],2:[function(require,module,exports){
+},{"mucss":16,"mumath":2}],2:[function(require,module,exports){
+/**
+ * Simple math utils.
+ * @module  mumath
+ */
+
+module.exports = {
+	between: wrap(between),
+	isBetween: wrap(isBetween),
+	toPrecision: wrap(toPrecision),
+	getPrecision: getPrecision,
+	min: wrap(Math.min),
+	max: wrap(Math.max),
+	add: wrap(function(a,b){return a+b}),
+	sub: wrap(function(a,b){return a-b}),
+	div: wrap(function(a,b){return a/b}),
+	mul: wrap(function(a,b){return a*b}),
+	mod: wrap(function(a,b){return a%b}),
+	floor: wrap(function(a){return Math.floor(a)}),
+	ceil: wrap(function(a){return Math.ceil(a)}),
+	round: wrap(function(a){return Math.round(a)})
+};
+
+
+/**
+ * Get fn wrapped with array/object attrs recognition
+ *
+ * @return {Function} Target function
+ */
+function wrap(fn){
+	return function(a){
+		var args = arguments;
+		if (a instanceof Array) {
+			var result = new Array(a.length), slice;
+			for (var i = 0; i < a.length; i++){
+				slice = [];
+				for (var j = 0, l = args.length, val; j < l; j++){
+					val = args[j] instanceof Array ? args[j][i] : args[j];
+					val = val || 0;
+					slice.push(val);
+				}
+				result[i] = fn.apply(this, slice);
+			}
+			return result;
+		}
+		else if (typeof a === 'object') {
+			var result = {}, slice;
+			for (var i in a){
+				slice = [];
+				for (var j = 0, l = args.length, val; j < l; j++){
+					val = typeof args[j] === 'object' ? args[j][i] : args[j];
+					val = val || 0;
+					slice.push(val);
+				}
+				result[i] = fn.apply(this, slice);
+			}
+			return result;
+		}
+		else {
+			return fn.apply(this, args);
+		}
+	};
+}
+
+
+/**
+ * Clamper.
+ * Detects proper clamp min/max.
+ *
+ * @param {number} a Current value to cut off
+ * @param {number} min One side limit
+ * @param {number} max Other side limit
+ *
+ * @return {number} Clamped value
+ */
+
+function between(a, min, max){
+	return max > min ? Math.max(Math.min(a,max),min) : Math.max(Math.min(a,min),max);
+}
+
+
+/**
+ * Whether element is between left & right including
+ *
+ * @param {number} a
+ * @param {number} left
+ * @param {number} right
+ *
+ * @return {Boolean}
+ */
+
+function isBetween(a, left, right){
+	if (a <= right && a >= left) return true;
+	return false;
+}
+
+
+
+/**
+ * Precision round
+ *
+ * @param {number} value
+ * @param {number} step Minimal discrete to round
+ *
+ * @return {number}
+ *
+ * @example
+ * toPrecision(213.34, 1) == 213
+ * toPrecision(213.34, .1) == 213.3
+ * toPrecision(213.34, 10) == 210
+ */
+
+function toPrecision(value, step) {
+	step = parseFloat(step);
+	if (step === 0) return value;
+	value = Math.round(value / step) * step;
+	return parseFloat(value.toFixed(getPrecision(step)));
+}
+
+
+/**
+ * Get precision from float:
+ *
+ * @example
+ * 1.1 → 1, 1234 → 0, .1234 → 4
+ *
+ * @param {number} n
+ *
+ * @return {number} decimap places
+ */
+
+function getPrecision(n){
+	var s = n + '',
+		d = s.indexOf('.') + 1;
+
+	return !d ? 0 : s.length - d;
+}
+
+},{}],3:[function(require,module,exports){
 var icicle = require('icicle');
 
 
@@ -497,7 +635,7 @@ Emmy.bindStaticAPI();
 
 /** @module muevents */
 module.exports = Emmy;
-},{"icicle":3}],3:[function(require,module,exports){
+},{"icicle":4}],4:[function(require,module,exports){
 /**
  * @module Icicle
  */
@@ -569,7 +707,7 @@ function isLocked(target, name){
 	var locks = lockCache.get(target);
 	return (locks && locks[name]);
 }
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var matches = require('matches-selector');
 var eachCSV = require('each-csv');
 var Emitter = require('emmy');
@@ -1386,7 +1524,7 @@ Emitter.bindStaticAPI.call(Enot);
 
 /** @module enot */
 module.exports = Enot;
-},{"each-csv":5,"emmy":2,"matches-selector":14,"mustring":9,"mutypes":17}],5:[function(require,module,exports){
+},{"each-csv":6,"emmy":3,"matches-selector":15,"mustring":10,"mutypes":19}],6:[function(require,module,exports){
 module.exports = eachCSV;
 
 /** match every comma-separated element ignoring 1-level parenthesis, e.g. `1,2(3,4),5` */
@@ -1408,7 +1546,7 @@ function eachCSV(str, fn){
 		fn(matchStr, i);
 	}
 };
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * Simple math utils.
  * @module  mumath
@@ -1535,7 +1673,7 @@ function getPrecision(n){
 	return !d ? 0 : s.length - d;
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var type = require('mutypes');
 var str = require('mustring');
 var eachCSV = require('each-csv');
@@ -1685,9 +1823,9 @@ function stringify(el){
 		return el.toString();
 	}
 }
-},{"each-csv":8,"mustring":9,"mutypes":17}],8:[function(require,module,exports){
-module.exports=require(5)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":5}],9:[function(require,module,exports){
+},{"each-csv":9,"mustring":10,"mutypes":19}],9:[function(require,module,exports){
+module.exports=require(6)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":6}],10:[function(require,module,exports){
 module.exports = {
 	camel:camel,
 	dashed:dashed,
@@ -1732,7 +1870,7 @@ function capfirst(str){
 function unprefixize(str, pf){
 	return (str.slice(0,pf.length) === pf) ? lower(str.slice(pf.length)) : str;
 }
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /** @module  st8 */
 module.exports = applyState;
 
@@ -2353,11 +2491,11 @@ function flattenKeys(set, deep){
 function unapplyState(target, props){
 	//TODO
 }
-},{"each-csv":11,"enot":4,"extend":13,"icicle":12,"mutypes":17}],11:[function(require,module,exports){
-module.exports=require(5)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":5}],12:[function(require,module,exports){
-module.exports=require(3)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\node_modules\\icicle\\index.js":3}],13:[function(require,module,exports){
+},{"each-csv":12,"enot":5,"extend":14,"icicle":13,"mutypes":19}],12:[function(require,module,exports){
+module.exports=require(6)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":6}],13:[function(require,module,exports){
+module.exports=require(4)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\node_modules\\icicle\\index.js":4}],14:[function(require,module,exports){
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
 var undefined;
@@ -2439,7 +2577,7 @@ module.exports = function extend() {
 };
 
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var proto = Element.prototype;
@@ -2469,7 +2607,7 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = css;
 
 
@@ -2776,139 +2914,118 @@ function Rect(l,t,r,b,w,h){
 }
 
 css.Rect = Rect;
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
+module.exports=require(2)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\aligner\\node_modules\\mumath\\index.js":2}],18:[function(require,module,exports){
 /**
- * Simple math utils.
- * @module  mumath
- */
+* Trivial types checkers.
+* Because there’re no common lib for that ( lodash_ is a fatguy)
+*/
+//TODO: make main use as `is.array(target)`
 
 module.exports = {
-	between: wrap(between),
-	isBetween: wrap(isBetween),
-	toPrecision: wrap(toPrecision),
-	getPrecision: getPrecision,
-	min: wrap(Math.min),
-	max: wrap(Math.max),
-	add: wrap(function(a,b){return a+b}),
-	sub: wrap(function(a,b){return a-b})
+	has: has,
+	isObject: isObject,
+	isFn: isFn,
+	isString: isString,
+	isNumber: isNumber,
+	isBoolean: isBool,
+	isPlain: isPlain,
+	isArray: isArray,
+	isArrayLike: isArrayLike,
+	isElement: isElement,
+	isPrivateName: isPrivateName,
+	isRegExp: isRegExp,
+	isEmpty: isEmpty
 };
 
+var win = typeof window === 'undefined' ? this : window;
+var doc = typeof document === 'undefined' ? null : document;
 
-/**
- * Get fn wrapped with array/object attrs recognition
- *
- * @return {Function} Target function
- */
-function wrap(fn){
-	return function(a){
-		var args = arguments;
-		if (a instanceof Array) {
-			var result = new Array(a.length), slice;
-			for (var i = 0; i < a.length; i++){
-				slice = [];
-				for (var j = 0, l = args.length, val; j < l; j++){
-					val = args[j] instanceof Array ? args[j][i] : args[j];
-					val = val || 0;
-					slice.push(val);
-				}
-				result[i] = fn.apply(this, slice);
-			}
-			return result;
-		}
-		else if (typeof a === 'object') {
-			var result = {}, slice;
-			for (var i in a){
-				slice = [];
-				for (var j = 0, l = args.length, val; j < l; j++){
-					val = typeof args[j] === 'object' ? args[j][i] : args[j];
-					val = val || 0;
-					slice.push(val);
-				}
-				result[i] = fn.apply(this, slice);
-			}
-			return result;
-		}
-		else {
-			return fn.apply(this, args);
-		}
+//speedy impl,ementation of `in`
+//NOTE: `!target[propName]` 2-3 orders faster than `!(propName in target)`
+function has(a, b){
+	if (!a) return false;
+	//NOTE: this causes getter fire
+	if (a[b]) return true;
+	return b in a;
+	// return a.hasOwnProperty(b);
+}
+
+//isPlainObject
+function isObject(a){
+	var Ctor, result;
+
+	if (isPlain(a) || isArray(a) || isElement(a) || isFn(a)) return false;
+
+	// avoid non `Object` objects, `arguments` objects, and DOM elements
+	if (
+		//FIXME: this condition causes weird behaviour if a includes specific valueOf or toSting
+		// !(a && ('' + a) === '[object Object]') ||
+		(!has(a, 'constructor') && (Ctor = a.constructor, isFn(Ctor) && !(Ctor instanceof Ctor))) ||
+		!(typeof a === 'object')
+		) {
+		return false;
+	}
+	// In most environments an object's own properties are iterated before
+	// its inherited properties. If the last iterated property is an object's
+	// own property then there are no inherited enumerable properties.
+	for(var key in a) {
+		result = key;
 	};
+
+	return typeof result == 'undefined' || has(a, result);
 }
 
-
-/**
- * Clamper.
- * Detects proper clamp min/max.
- *
- * @param {number} a Current value to cut off
- * @param {number} min One side limit
- * @param {number} max Other side limit
- *
- * @return {number} Clamped value
- */
-
-function between(a, min, max){
-	return max > min ? Math.max(Math.min(a,max),min) : Math.max(Math.min(a,min),max);
+function isEmpty(a){
+	if (!a) return true;
+	for (var k in a) {
+		return false;
+	}
+	return true;
 }
 
-
-/**
- * Whether element is between left & right including
- *
- * @param {number} a
- * @param {number} left
- * @param {number} right
- *
- * @return {Boolean}
- */
-
-function isBetween(a, left, right){
-	if (a <= right && a >= left) return true;
-	return false;
+function isFn(a){
+	return !!(a && a.apply);
 }
 
-
-
-/**
- * Precision round
- *
- * @param {number} value
- * @param {number} step Minimal discrete to round
- *
- * @return {number}
- *
- * @example
- * toPrecision(213.34, 1) == 213
- * toPrecision(213.34, .1) == 213.3
- * toPrecision(213.34, 10) == 210
- */
-
-function toPrecision(value, step) {
-	step = parseFloat(step);
-	if (step === 0) return value;
-	value = Math.round(value / step) * step;
-	return parseFloat(value.toFixed(getPrecision(step)));
+function isString(a){
+	return typeof a === 'string' || a instanceof String;
 }
 
-
-/**
- * Get precision from float:
- *
- * @example
- * 1.1 → 1, 1234 → 0, .1234 → 4
- *
- * @param {number} n
- *
- * @return {number} decimap places
- */
-
-function getPrecision(n){
-	var s = n + '',
-		d = s.indexOf('.') + 1;
-
-	return !d ? 0 : s.length - d;
+function isNumber(a){
+	return typeof a === 'number' || a instanceof Number;
 }
 
-},{}],17:[function(require,module,exports){
+function isBool(a){
+	return typeof a === 'boolean' || a instanceof Boolean;
+}
+
+function isPlain(a){
+	return !a || isString(a) || isNumber(a) || isBool(a);
+}
+
+function isArray(a){
+	return a instanceof Array;
+}
+
+//FIXME: add tests from http://jsfiddle.net/ku9LS/1/
+function isArrayLike(a){
+	return isArray(a) || (a && !isString(a) && !a.nodeType && a != win && !isFn(a) && typeof a.length === 'number');
+}
+
+function isElement(target){
+	return doc && target instanceof HTMLElement;
+}
+
+function isPrivateName(n){
+	return n[0] === '_' && n.length > 1;
+}
+
+function isRegExp(target){
+	return target instanceof RegExp;
+}
+},{}],19:[function(require,module,exports){
 /**
 * Trivial types checkers.
 * Because there’re no common lib for that ( lodash_ is a fatguy)
@@ -3008,27 +3125,27 @@ function isPrivateName(n){
 function isRegExp(target){
 	return target instanceof RegExp;
 }
-},{}],18:[function(require,module,exports){
-module.exports=require(4)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\index.js":4,"each-csv":19,"emmy":20,"matches-selector":22,"mustring":23,"mutypes":17}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports=require(5)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":5}],20:[function(require,module,exports){
-module.exports=require(2)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\index.js":2,"icicle":21}],21:[function(require,module,exports){
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\index.js":5,"each-csv":21,"emmy":22,"matches-selector":24,"mustring":25,"mutypes":19}],21:[function(require,module,exports){
+module.exports=require(6)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":6}],22:[function(require,module,exports){
 module.exports=require(3)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\node_modules\\icicle\\index.js":3}],22:[function(require,module,exports){
-module.exports=require(14)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\matches-selector\\index.js":14}],23:[function(require,module,exports){
-module.exports=require(9)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\mustring\\index.js":9}],24:[function(require,module,exports){
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\index.js":3,"icicle":23}],23:[function(require,module,exports){
+module.exports=require(4)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\node_modules\\icicle\\index.js":4}],24:[function(require,module,exports){
 module.exports=require(15)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\mucss\\index.js":15}],25:[function(require,module,exports){
-module.exports=require(7)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\muparse\\index.js":7,"each-csv":26,"mustring":27,"mutypes":17}],26:[function(require,module,exports){
-module.exports=require(5)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":5}],27:[function(require,module,exports){
-module.exports=require(9)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\mustring\\index.js":9}],28:[function(require,module,exports){
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\matches-selector\\index.js":15}],25:[function(require,module,exports){
+module.exports=require(10)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\mustring\\index.js":10}],26:[function(require,module,exports){
+module.exports=require(16)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\mucss\\index.js":16}],27:[function(require,module,exports){
+module.exports=require(8)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\muparse\\index.js":8,"each-csv":28,"mustring":29,"mutypes":19}],28:[function(require,module,exports){
+module.exports=require(6)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":6}],29:[function(require,module,exports){
+module.exports=require(10)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\mustring\\index.js":10}],30:[function(require,module,exports){
 /**
  * Append all not-existing props to the initial object
  *
@@ -3052,7 +3169,7 @@ module.exports = function(){
 
 	return res;
 };
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var type = require('mutypes');
 var extend = require('extend');
 
@@ -3113,7 +3230,7 @@ function splitKeys(obj, deep, separator){
 
 /** default separator */
 splitKeys.separator = /\s?,\s?/;
-},{"extend":30,"mutypes":17}],30:[function(require,module,exports){
+},{"extend":32,"mutypes":19}],32:[function(require,module,exports){
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
 var undefined;
@@ -3196,15 +3313,15 @@ module.exports = function extend() {
 };
 
 
-},{}],31:[function(require,module,exports){
-module.exports=require(10)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\st8\\index.js":10,"each-csv":32,"enot":18,"extend":13,"icicle":33,"mutypes":17}],32:[function(require,module,exports){
-module.exports=require(5)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":5}],33:[function(require,module,exports){
-module.exports=require(3)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\node_modules\\icicle\\index.js":3}],34:[function(require,module,exports){
-module.exports=require(28)
-},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\resizable\\node_modules\\soft-extend\\index.js":28}],35:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
+module.exports=require(11)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\st8\\index.js":11,"each-csv":34,"enot":20,"extend":14,"icicle":35,"mutypes":19}],34:[function(require,module,exports){
+module.exports=require(6)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\enot\\node_modules\\each-csv\\index.js":6}],35:[function(require,module,exports){
+module.exports=require(4)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\draggy\\node_modules\\emmy\\node_modules\\icicle\\index.js":4}],36:[function(require,module,exports){
+module.exports=require(30)
+},{"c:\\Users\\dmitry\\Dropbox\\Projects\\placer\\node_modules\\resizable\\node_modules\\soft-extend\\index.js":30}],37:[function(require,module,exports){
 var slice = [].slice;
 
 module.exports = function (selector, multiple) {
@@ -3936,7 +4053,7 @@ function getClientX(e){
 	// mouse event
 	return e.clientX;
 }
-},{"emmy":2,"enot":4,"mucss":15,"mumath":6,"muparse":7,"mutypes":17,"query-relative":undefined,"st8":10}],"placer":[function(require,module,exports){
+},{"emmy":3,"enot":5,"mucss":16,"mumath":7,"muparse":8,"mutypes":19,"query-relative":undefined,"st8":11}],"placer":[function(require,module,exports){
 /**
 * @module  placer
 *
@@ -3948,10 +4065,10 @@ module.exports = place;
 //TODO: fix for IE8
 //TODO: fix resizable/draggable tests in firefox
 //TODO: use translate3d instead of absolute repositioning (option?)
-//TODO: implement avoiding strategy (at least one use-case)
+//TODO: implement avoiding strategy (graphic editors use-case when you need to avoid placing over selected elements)
 //TODO: enhance best-side strategy: choose the most closest side
 
-var type = require('mutypes');
+var type = require('mutype');
 var css = require('mucss');
 var q = require('query-relative');
 var softExtend = require('soft-extend');
@@ -4012,12 +4129,11 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	options.relativeTo = options.relativeTo && q(options.relativeTo, element) || win;
-	options.within = options.within && q(options.within, element);
-
+	options.relativeTo = options.relativeTo && q(element, options.relativeTo) || win;
+	options.within = options.within && q(element, options.within);
 
 	//TODO: query avoidables
-	// options.avoid = q(options.avoid, element, true);
+	// options.avoid = q(element, options.avoid, true);
 
 
 	//set the same position as the target’s one or absolute
@@ -4089,7 +4205,7 @@ var placeBySide = {
 		var parentRect = getParentRect(parent);
 
 		//correct borders
-		includeBorders(parentRect, parent);
+		contractRect(parentRect, css.borders(parent));
 
 
 		//place left (set css right because placee width may change)
@@ -4119,7 +4235,7 @@ var placeBySide = {
 		var parentRect = getParentRect(placee.offsetParent);
 
 		//correct borders
-		includeBorders(parentRect, placee.offsetParent);
+		contractRect(parentRect, css.borders(placee.offsetParent));
 
 
 		//place right
@@ -4150,7 +4266,7 @@ var placeBySide = {
 
 
 		//correct borders
-		includeBorders(parentRect, parent);
+		contractRect(parentRect, css.borders(parent));
 
 
 		//place vertically top-side
@@ -4181,7 +4297,7 @@ var placeBySide = {
 
 
 		//correct borders
-		includeBorders(parentRect, placee.offsetParent);
+		contractRect(parentRect, css.borders(placee.offsetParent));
 
 
 		//place bottom
@@ -4213,9 +4329,11 @@ function getBestSide(placee, opts) {
 		placeeRect = css.offsets(placee),
 		placerRect = css.offsets(opts.relativeTo);
 
-	includeBorders(withinRect, opts.within);
+	contractRect(withinRect, css.borders(opts.within));
 
-	//rect of "hot" areas
+	var placeeMargins = css.margins(placee);
+
+	//rect of "hot" area (available spaces from placer to container)
 	var hotRect = {
 		top: placerRect.top - withinRect.top,
 		bottom: withinRect.bottom - placerRect.bottom,
@@ -4225,10 +4343,10 @@ function getBestSide(placee, opts) {
 
 	//rect of available spaces
 	var availSpace = {
-		top: hotRect.top - placeeRect.height,
-		bottom: hotRect.bottom - placeeRect.height,
-		left: hotRect.left - placeeRect.width,
-		right: hotRect.right - placeeRect.width
+		top: hotRect.top - placeeRect.height - placeeMargins.top - placeeMargins.bottom,
+		bottom: hotRect.bottom - placeeRect.height - placeeMargins.top - placeeMargins.bottom,
+		left: hotRect.left - placeeRect.width - placeeMargins.left - placeeMargins.right,
+		right: hotRect.right - placeeRect.width - placeeMargins.left - placeeMargins.right
 	};
 
 	//TODO:
@@ -4255,15 +4373,13 @@ function getBestSide(placee, opts) {
 
 
 
-/** include borders in offsets */
-//FIXME: think of outskirting borders detection to offsets (inner/outer offsets)
-function includeBorders(rect, el){
-	//correct borders
-	var borders = css.borders(el);
-	rect.left += borders.left;
-	rect.right -= borders.right;
-	rect.bottom -= borders.bottom;
-	rect.top += borders.top;
+/** contract rect 1 with rect 2 */
+function contractRect(rect, rect2){
+	//correct rect2
+	rect.left += rect2.left;
+	rect.right -= rect2.right;
+	rect.bottom -= rect2.bottom;
+	rect.top += rect2.top;
 	return rect;
 }
 
@@ -4272,16 +4388,18 @@ function includeBorders(rect, el){
 function trimPositionY(placee, within, parentRect){
 	var placeeRect = css.offsets(placee);
 	var withinRect = css.offsets(within);
-	includeBorders(withinRect, within);
+	var placeeMargins = css.margins(placee);
 
-	if (withinRect.top > placeeRect.top) {
+	contractRect(withinRect, css.borders(within));
+
+	if (withinRect.top > placeeRect.top - placeeMargins.top) {
 		css(placee, {
 			top: withinRect.top - parentRect.top,
 			bottom: 'auto'
 		});
 	}
 
-	else if (withinRect.bottom < placeeRect.bottom) {
+	else if (withinRect.bottom < placeeRect.bottom + placeeMargins.bottom) {
 		css(placee, {
 			top: 'auto',
 			bottom: parentRect.bottom - withinRect.bottom
@@ -4291,16 +4409,18 @@ function trimPositionY(placee, within, parentRect){
 function trimPositionX(placee, within, parentRect){
 	var placeeRect = css.offsets(placee);
 	var withinRect = css.offsets(within);
-	includeBorders(withinRect, within);
+	var placeeMargins = css.margins(placee);
 
-	if (withinRect.left > placeeRect.left) {
+	contractRect(withinRect, css.borders(within));
+
+	if (withinRect.left > placeeRect.left - placeeMargins.left) {
 		css(placee, {
 			left: withinRect.left - parentRect.left,
 			right: 'auto'
 		});
 	}
 
-	else if (withinRect.right < placeeRect.right) {
+	else if (withinRect.right < placeeRect.right + placeeMargins.right) {
 		css(placee, {
 			left: 'auto',
 			right: parentRect.right - withinRect.right
@@ -4337,7 +4457,7 @@ function getParentRect(target){
 
 	return rect;
 }
-},{"aligner":1,"mucss":15,"mumath":16,"mutypes":17,"query-relative":undefined,"soft-extend":34}],"query-relative":[function(require,module,exports){
+},{"aligner":1,"mucss":16,"mumath":17,"mutype":18,"query-relative":undefined,"soft-extend":36}],"query-relative":[function(require,module,exports){
 var doc = document, root = doc.documentElement;
 
 
@@ -4346,56 +4466,69 @@ var matches = require('matches-selector');
 
 
 //TODO: detect inner parenthesis, like :closest(:not(abc))
-//TODO: make target be able to be array
-//TODO: multiple result (at least one use-case)
 
-
-module.exports = q;
+/**
+ * @module query-relative
+ */
+module.exports = function(targets, str, multiple){
+	var res = q(targets,str);
+	return !multiple && isList(res) ? res[0] : res;
+};
 
 
 /**
- * Query selector including initial pseudos
+ * Query selector including initial pseudos, return list
  *
  * @param {string} str A query string
- * @param {Element} target A query context element
+ * @param {Element}? target A query context element
  *
  * @return {[type]} [description]
  */
-function q(str, target, multiple) {
+function q(targets, str) {
+	//no target means global target
+	if (typeof targets === 'string') {
+		str = targets;
+		targets = doc;
+	}
 
-	//if target is undefined, perform usual global query
-	if (!target) target = root;
+	//if targets is undefined, perform usual global query
+	if (!targets) targets = this;
 
 	//treat empty string as a target itself
 	if (!str){
-		return target;
+		// console.groupEnd();
+		return targets;
+	}
+
+	//filter window etc non-queryable objects
+	if (targets === window) targets === doc;
+	else if (!(targets instanceof Node) && !isList(targets)) {
+		// console.groupEnd();
+		return targets;
 	}
 
 
-	// console.group('q', str, target);
-
 	var m, result;
+	// console.group(targets, str, isList(targets))
 
 	//detect whether query includes special pseudos
-	if (m = /:(parent|closest|next|prev)(?:\(([^\)]*)\))?/.exec(str)) {
+	if (m = /:(parent|closest|next|prev|root)(?:\(([^\)]*)\))?/.exec(str)) {
 		var pseudo = m[1], idx = m.index, param = m[2], token = m[0];
 
 		//1. pre-query
 		if (idx) {
-			//FIXME: ensure that single select is enough here
-			target = _q.call(target, str.slice(0, idx));
+			targets = queryList(targets, str.slice(0, idx), true);
 		}
 
-
 		//2. query
-		result = pseudos[pseudo](target, param);
+		result = transformSet(targets, pseudos[pseudo], param);
 		if (!result) {
 			// console.groupEnd();
 			return null;
 		}
+		if (isList(result) && !result.length) return result;
 
-
-		//2.1 if str starts with >, add scoping
+		//2.1 if rest str starts with >, add scoping
 		var strRest = str.slice(idx + token.length).trim();
 		if (strRest[0] === '>') {
 			if (scopeAvail) {
@@ -4403,27 +4536,51 @@ function q(str, target, multiple) {
 			}
 			//fake selector via fake id on selected element
 			else {
-				var id = result.getAttribute('id');
-				if (!id) result.setAttribute('id', id = genId());
+				var id = genId();
+				transformSet(result, function(el, id){ el.setAttribute('data-__qr', id); }, id);
 
-				strRest = '#' + id + strRest;
+				strRest = '[data-__qr' + id + ']' + strRest;
 			}
 		}
 
-
 		//3. Post-query or die
-		result = q(strRest, result, multiple);
+		result = q(result, strRest);
 	}
 
 	//make default query
 	else {
-		result = _q.call(target, str, multiple);
+		result = queryList(targets, str);
 	}
 
 	// console.groupEnd();
 	return result;
 }
 
+/** Query elements from a list of targets, return list of queried items */
+function queryList (targets, query) {
+	if (isList(targets)) {
+		return transformSet(targets, function(item, query){
+			return _q.call(item, query, true);
+		}, query);
+	}
+	//q single
+	else return _q.call(targets, query, true);
+}
+
+
+/** Apply transformaion function on each element from a list, return resulting set */
+function transformSet(list, fn, arg) {
+	var res = [];
+	if (!isList(list)) list = [list];
+	for (var i = list.length, el, chunk; i--;) {
+		el = list[i];
+		if (el) {
+			chunk = fn(el, arg);
+			if (chunk) res = [].concat(chunk, res);
+		}
+	}
+	return res;
+}
 
 
 //detect :scope
@@ -4439,14 +4596,16 @@ catch (e){
 /** generate unique id for selector */
 var counter = Date.now() % 1e9;
 function genId(e, q){
-	return '__p' + (Math.random() * 1e9 >>> 0) + (counter++ + '__');
+	return (Math.random() * 1e9 >>> 0) + (counter++);
 }
 
 
 /** Custom :pseudos */
-var pseudos = q.pseudos = {
+var pseudos = {
 	/** Get parent, if any */
 	parent: function(e, q){
+		//root el is considered the topmost
+		if (e === doc) return root;
 		var res = e.parentNode;
 		return res === doc ? e : res;
 	},
@@ -4455,9 +4614,11 @@ var pseudos = q.pseudos = {
 	* Get closest parent matching selector (or self)
 	*/
 	closest: function(e, q){
-		if (!q || matches(e, q)) return e;
+		//root el is considered the topmost
+		if (e === doc) return root;
+		if (!q || (q instanceof Node ? e == q : matches(e, q))) return e;
 		while ((e = e.parentNode) !== doc) {
-			if (!q || matches(e, q)) return e;
+			if (!q || (q instanceof Node ? e == q : matches(e, q))) return e;
 		}
 	},
 
@@ -4467,7 +4628,7 @@ var pseudos = q.pseudos = {
 	prev: function(e, q){
 		while (e = e.previousSibling) {
 			if (e.nodeType !== 1) continue;
-			if (!q || matches(e, q)) return e;
+			if (!q || (q instanceof Node ? e == q : matches(e, q))) return e;
 		}
 	},
 
@@ -4477,11 +4638,32 @@ var pseudos = q.pseudos = {
 	next: function(e, q){
 		while (e = e.nextSibling) {
 			if (e.nodeType !== 1) continue;
-			if (!q || matches(e, q)) return e;
+			if (!q || (q instanceof Node ? e == q : matches(e, q))) return e;
 		}
+	},
+
+	/**
+	 * Get root for any request
+	 */
+	root: function(){
+		return root;
 	}
 };
-},{"matches-selector":14,"tiny-element":35}],"resizable":[function(require,module,exports){
+
+
+/** simple list checker */
+function isList(a){
+	return a instanceof Array || a instanceof NodeList;
+}
+
+
+
+//export pseudos
+exports.closest = pseudos.closest;
+exports.parent = pseudos.parent;
+exports.next = pseudos.next;
+exports.prev = pseudos.prev;
+},{"matches-selector":15,"tiny-element":37}],"resizable":[function(require,module,exports){
 var css = require('mucss');
 var Draggable = require('draggy');
 var state = require('st8');
@@ -4915,4 +5097,4 @@ Enot(proto);
  * @module resizable
  */
 module.exports = Resizable;
-},{"draggy":undefined,"enot":18,"mucss":24,"muparse":25,"mutypes":17,"soft-extend":28,"split-keys":29,"st8":31,"tiny-element":35}]},{},[]);
+},{"draggy":undefined,"enot":20,"mucss":26,"muparse":27,"mutypes":19,"soft-extend":30,"split-keys":31,"st8":33,"tiny-element":37}]},{},[]);
