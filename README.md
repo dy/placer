@@ -1,7 +1,4 @@
-# Placer
-
-
-[![NPM](https://nodei.co/npm/placer.png)](https://nodei.co/npm/placer/)
+# Placer [![Code Climate](https://codeclimate.com/github/dfcreative/placer/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/placer) <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
 
 Place any two DOM elements in a way you like. Mainly needed for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
@@ -38,6 +35,4 @@ place(element, {
 | `avoid` | _string_ / _element_ / _window_ / _rectangle_ | `undefined` | The areas or elements to avoid during placing. PENDING |
 
 
-## License
-
-MIT
+[![NPM](https://nodei.co/npm/placer.png)](https://nodei.co/npm/placer/)
