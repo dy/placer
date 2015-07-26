@@ -5,18 +5,19 @@
 */
 module.exports = place;
 
-//TODO: fix draggy in safari
-//TODO: fix for IE8
-//TODO: fix resizable/draggable tests in firefox
 //TODO: use translate3d instead of absolute repositioning (option?)
 //TODO: implement avoiding strategy (graphic editors use-case when you need to avoid placing over selected elements)
 //TODO: enhance best-side strategy: choose the most closest side
 
-var type = require('mutype');
-var css = require('mucss');
-var q = require('query-relative');
+var css = require('mucss/css');
+var scrollbarWidth = require('mucss/scrollbar');
+var isFixed = require('mucss/is-fixed');
+var offsets = require('mucss/offset');
+var hasScroll = require('mucss/has-scroll');
+var borders = require('mucss/border');
+var margins = require('mucss/margin');
+var q = require('queried');
 var softExtend = require('soft-extend');
-var m = require('mumath');
 var align = require('aligner');
 
 
@@ -73,15 +74,15 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	options.relativeTo = options.relativeTo && q(element, options.relativeTo) || win;
-	options.within = options.within && q(element, options.within);
+	options.relativeTo = options.relativeTo && q(options.relativeTo, element) || win;
+	options.within = options.within && q(options.within, element);
 
 	//TODO: query avoidables
 	// options.avoid = q(element, options.avoid, true);
 
 
 	//set the same position as the target’s one or absolute
-	if (type.isElement(options.relativeTo) && css.isFixed(options.relativeTo)) {
+	if (options.relativeTo instanceof Node && isFixed(options.relativeTo)) {
 		element.style.position = 'fixed';
 	}
 	else {
@@ -111,7 +112,7 @@ var placeBySide = {
 		// console.log('place center');
 
 		//get relativeTo & within rectangles
-		var placerRect = css.offsets(opts.relativeTo);
+		var placerRect = offsets(opts.relativeTo);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
@@ -145,11 +146,11 @@ var placeBySide = {
 
 		var parent = placee.offsetParent;
 
-		var placerRect = css.offsets(opts.relativeTo);
+		var placerRect = offsets(opts.relativeTo);
 		var parentRect = getParentRect(parent);
 
 		//correct borders
-		contractRect(parentRect, css.borders(parent));
+		contractRect(parentRect, borders(parent));
 
 
 		//place left (set css right because placee width may change)
@@ -175,11 +176,11 @@ var placeBySide = {
 
 
 		//get relativeTo & within rectangles
-		var placerRect = css.offsets(opts.relativeTo);
+		var placerRect = offsets(opts.relativeTo);
 		var parentRect = getParentRect(placee.offsetParent);
 
 		//correct borders
-		contractRect(parentRect, css.borders(placee.offsetParent));
+		contractRect(parentRect, borders(placee.offsetParent));
 
 
 		//place right
@@ -205,12 +206,12 @@ var placeBySide = {
 		// console.log('place top');
 
 		var parent = placee.offsetParent;
-		var placerRect = css.offsets(opts.relativeTo);
+		var placerRect = offsets(opts.relativeTo);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
 		//correct borders
-		contractRect(parentRect, css.borders(parent));
+		contractRect(parentRect, borders(parent));
 
 
 		//place vertically top-side
@@ -236,12 +237,12 @@ var placeBySide = {
 		// console.log('place bottom');
 
 		//get relativeTo & within rectangles
-		var placerRect = css.offsets(opts.relativeTo);
+		var placerRect = offsets(opts.relativeTo);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
 		//correct borders
-		contractRect(parentRect, css.borders(placee.offsetParent));
+		contractRect(parentRect, borders(placee.offsetParent));
 
 
 		//place bottom
@@ -269,13 +270,13 @@ var placeBySide = {
 function getBestSide(placee, opts) {
 	var initSide = opts.side;
 
-	var withinRect = css.offsets(opts.within),
-		placeeRect = css.offsets(placee),
-		placerRect = css.offsets(opts.relativeTo);
+	var withinRect = offsets(opts.within),
+		placeeRect = offsets(placee),
+		placerRect = offsets(opts.relativeTo);
 
-	contractRect(withinRect, css.borders(opts.within));
+	contractRect(withinRect, borders(opts.within));
 
-	var placeeMargins = css.margins(placee);
+	var placeeMargins = margins(placee);
 
 	//rect of "hot" area (available spaces from placer to container)
 	var hotRect = {
@@ -330,11 +331,11 @@ function contractRect(rect, rect2){
 
 /** apply limits rectangle to the position of an element */
 function trimPositionY(placee, within, parentRect){
-	var placeeRect = css.offsets(placee);
-	var withinRect = css.offsets(within);
-	var placeeMargins = css.margins(placee);
+	var placeeRect = offsets(placee);
+	var withinRect = offsets(within);
+	var placeeMargins = margins(placee);
 
-	contractRect(withinRect, css.borders(within));
+	contractRect(withinRect, borders(within));
 
 	if (withinRect.top > placeeRect.top - placeeMargins.top) {
 		css(placee, {
@@ -351,11 +352,11 @@ function trimPositionY(placee, within, parentRect){
 	}
 }
 function trimPositionX(placee, within, parentRect){
-	var placeeRect = css.offsets(placee);
-	var withinRect = css.offsets(within);
-	var placeeMargins = css.margins(placee);
+	var placeeRect = offsets(placee);
+	var withinRect = offsets(within);
+	var placeeMargins = margins(placee);
 
-	contractRect(withinRect, css.borders(within));
+	contractRect(withinRect, borders(within));
 
 	if (withinRect.left > placeeRect.left - placeeMargins.left) {
 		css(placee, {
@@ -388,15 +389,15 @@ function getParentRect(target){
 	if (target === doc.body || target === root && getComputedStyle(target).position === 'static'){
 		rect = {
 			left: 0,
-			right: win.innerWidth - (css.hasScrollY() ? css.scrollbar : 0),
+			right: win.innerWidth - (hasScroll.y() ? scrollbarWidth : 0),
 			width: win.innerWidth,
 			top: 0,
-			bottom: win.innerHeight - (css.hasScrollX() ? css.scrollbar : 0),
+			bottom: win.innerHeight - (hasScroll.x() ? scrollbarWidth : 0),
 			height: win.innerHeight
 		};
 	}
 	else {
-		rect = css.offsets(target);
+		rect = offsets(target);
 	}
 
 	return rect;

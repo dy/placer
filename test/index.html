@@ -1,4 +1,7 @@
 <!doctype html>
+
+<meta charset="utf-8"/>
+
 <style type="text/css">
 	* {
 		box-sizing: border-box;
@@ -301,21 +304,7 @@
 	}
 </style>
 
-
-<script>
-	//contains polyfill
-	Node.prototype.contains = function(el){
-		while (el = el.parentNode) {
-			if (el === this) return true;
-		}
-		return false;
-	}
-</script>
-<script src="https://rawgit.com/Polymer/WeakMap/master/weakmap.js"></script>
-
-
-<!-- <script src="../node_modules/require-stub/index.js"></script> -->
-<script src="test.js"></script>
+<script src="bundle.js"></script>
 
 
 <h1><a href="http://github.com/dfcreative/placer"><em>Placer.js</em></a> tests</h1>
@@ -523,70 +512,70 @@
 	<h3>4.1. Relative to a target</h3>
 
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="top" title="align">top</div>
+			<div class="placee" side="center" align="top" title="align">top</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="middle" title="align">middle</div>
+			<div class="placee" side="center" align="middle" title="align">middle</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="bottom" title="align">bottom</div>
+			<div class="placee" side="center" align="bottom" title="align">bottom</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="left" title="align">left</div>
+			<div class="placee" side="center" align="left" title="align">left</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="center" title="align">center</div>
+			<div class="placee" side="center" align="center" title="align">center</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="right" title="align">right</div>
+			<div class="placee" side="center" align="right" title="align">right</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="0,0" title="align">0, 0</div>
+			<div class="placee" side="center" align="0,0" title="align">0, 0</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align=".3,.8" title="align">0.3, 0.8</div>
+			<div class="placee" side="center" align=".3,.8" title="align">0.3, 0.8</div>
 			<div class="placer" title="side">center</div>
 		</div>
 		<div class="container">
-			<div class="placee" relative-to=":next" side="center" align="1,1" title="align">1, 1</div>
+			<div class="placee" side="center" align="1,1" title="align">1, 1</div>
 			<div class="placer" title="side">center</div>
 		</div>
 
 	<h3>4.2. Relative to a container</h3>
 
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="top" title="align">top</div>
+			<div class="placee" relative-to="parent" side="center" align="top" title="align">top</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="middle" title="align">middle</div>
+			<div class="placee" relative-to="parent" side="center" align="middle" title="align">middle</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="bottom" title="align">bottom</div>
+			<div class="placee" relative-to="parent" side="center" align="bottom" title="align">bottom</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="left" title="align">left</div>
+			<div class="placee" relative-to="parent" side="center" align="left" title="align">left</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="center" title="align">center</div>
+			<div class="placee" relative-to="parent" side="center" align="center" title="align">center</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="right" title="align">right</div>
+			<div class="placee" relative-to="parent" side="center" align="right" title="align">right</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="0,0" title="align">0, 0</div>
+			<div class="placee" relative-to="parent" side="center" align="0,0" title="align">0, 0</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align=".3,.8" title="align">0.3, 0.8</div>
+			<div class="placee" relative-to="parent" side="center" align=".3,.8" title="align">0.3, 0.8</div>
 		</div>
 		<div class="container container-label-center">
-			<div class="placee" relative-to=":parent" side="center" align="1,1" title="align">1, 1</div>
+			<div class="placee" relative-to="parent" side="center" align="1,1" title="align">1, 1</div>
 		</div>
 </section>
 
@@ -752,7 +741,7 @@ TODO: browsers
 
 
 <script>
-	var q = require('query-relative');
+	var q = require('queried');
 	var place = require('placer');
 	var Draggy = require('draggy');
 	var Resizable = require('resizable');
@@ -763,6 +752,7 @@ TODO: browsers
 	for (var i = 0, l = $resizables.length, $resizable; i < l; i++){
 		$resizable = $resizables[i];
 		var res = new Resizable($resizable, {
+			within: $resizable.parentNode,
 			resize: function(){
 				var container = this.element.parentNode;
 				updateItem(container.querySelector('.placee'));
@@ -780,30 +770,39 @@ TODO: browsers
 			}
 		});
 		var dr = new Draggy($avoidable, {
-			drag: function(){
-			}
 		});
 	}
 
 
 	//query all placee blocks, apply placer positioning
 	function update(){
-		var $placees = document.querySelectorAll('.placee');
-		for (var i = 0, l = $placees.length, $placee; i < l; i++){
-			updateItem($placees[i]);
-		}
+		q.all('.placee').forEach(updateItem);
 	}
 
 	function updateItem($placee){
-		place($placee, {
-			relativeTo: $placee.getAttribute('relative-to') || q($placee, ':next(.placer)'),
+		var within = $placee.getAttribute('within');
+
+		if (/limiter/.test(within)) {
+			within = q('.limiter', $placee.parentNode);
+		}
+
+		var relTo = $placee.getAttribute('relative-to') || q('.placer', $placee.parentNode);
+
+		if (relTo === 'parent') {
+			relTo = $placee.parentNode;
+		}
+
+		var opts = {
+			relativeTo: relTo,
 			side: $placee.getAttribute('side'),
 			avoid: $placee.getAttribute('avoid'),
 			align: $placee.getAttribute('align'),
-			within: $placee.getAttribute('within'),
+			within: within,
 			findBestSide: $placee.getAttribute('find-best-side') === 'false' ? false : true,
 			side: $placee.getAttribute('side')
-		});
+		};
+
+		place($placee, opts);
 	}
 
 	//double update to exclude caused horizontal scroll

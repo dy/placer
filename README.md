@@ -1,4 +1,4 @@
-# Placer [![Code Climate](https://codeclimate.com/github/dfcreative/placer/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/placer) <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
+# Placer [![Code Climate](https://codeclimate.com/github/dfcreative/placer/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/placer) [![Dependencies](https://david-dm.org/dfcreative/color-ranger.svg)](https://david-dm.org/dfcreative/color-ranger") <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
 
 Place any two DOM elements in a way you like. Mainly needed for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
