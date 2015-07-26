@@ -1,4 +1,4 @@
-# Placer [![Code Climate](https://codeclimate.com/github/dfcreative/placer/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/placer) [![Dependencies](https://david-dm.org/dfcreative/color-ranger.svg)](https://david-dm.org/dfcreative/color-ranger") <a href="UNLICENSE"><img src="http://upload.wikimedia.org/wikipedia/commons/6/62/PD-icon.svg" width="20"/></a>
+# Placer [![Code Climate](https://codeclimate.com/github/dfcreative/placer/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/placer) [![Dependencies](https://david-dm.org/dfcreative/color-ranger.svg)](https://david-dm.org/dfcreative/color-ranger")
 
 Place any two DOM elements in a way you like. Mainly needed for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
@@ -7,9 +7,8 @@ Place any two DOM elements in a way you like. Mainly needed for dropdowns, toolt
 
 ## Usage
 
-You need browserify or alike to use _placer_.
+[![npm install placer](https://nodei.co/npm/placer.png?mini=true)](https://npmjs.org/package/placer/)
 
-`$ npm install placer`
 
 ```js
 var place = require('placer');
@@ -33,6 +32,3 @@ place(element, {
 | `within` | _string_ / _element_ / _window_ / _rectangle_ | `window` | Restriction area |
 | `findBestSide` | _false_ / _true_ | `true` | Find the most appropiate side for the placement |
 | `avoid` | _string_ / _element_ / _window_ / _rectangle_ | `undefined` | The areas or elements to avoid during placing. PENDING |
-
-
-[![NPM](https://nodei.co/npm/placer.png)](https://nodei.co/npm/placer/)

@@ -74,15 +74,19 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	options.relativeTo = options.relativeTo && q(options.relativeTo, element) || win;
-	options.within = options.within && q(options.within, element);
+	if (!options.relativeTo) {
+		options.relativeTo = q(options.relativeTo, element) || win;
+	}
+	if (!options.within) {
+		options.within = q(options.within, element);
+	}
 
 	//TODO: query avoidables
 	// options.avoid = q(element, options.avoid, true);
 
 
-	//set the same position as the target’s one or absolute
-	if (options.relativeTo instanceof Node && isFixed(options.relativeTo)) {
+	//set the same position as the target or absolute
+	if (options.relativeTo instanceof Element && isFixed(options.relativeTo)) {
 		element.style.position = 'fixed';
 	}
 	else {
@@ -266,8 +270,10 @@ var placeBySide = {
 };
 
 
-/** Find the most appropriate side to place element */
-function getBestSide(placee, opts) {
+/**
+ * Find the most appropriate side to place element
+ */
+function getBestSide (placee, opts) {
 	var initSide = opts.side;
 
 	var withinRect = offsets(opts.within),
@@ -313,6 +319,7 @@ function getBestSide(placee, opts) {
 			maxSide = side; maxSpace = availSpace[maxSide];
 		}
 	}
+
 	return maxSide;
 }
 
