@@ -16,7 +16,6 @@ var offsets = require('mucss/offset');
 var hasScroll = require('mucss/has-scroll');
 var borders = require('mucss/border');
 var margins = require('mucss/margin');
-var q = require('queried');
 var softExtend = require('soft-extend');
 var align = require('aligner');
 
@@ -67,18 +66,15 @@ var defaults = {
  * @return {boolean} The result of placement - whether placing succeeded
  */
 function place(element, options){
-	//ensure element
-	element = q(element);
-
 	//inherit defaults
 	options = softExtend(options, defaults);
 
 	//ensure elements
 	if (!options.to) {
-		options.to = q(options.to, element) || win;
+		options.to = win;
 	}
 	if (!options.within) {
-		options.within = q(options.within, element);
+		options.within = root;
 	}
 
 	//TODO: query avoidables
