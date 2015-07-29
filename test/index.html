@@ -735,7 +735,7 @@ Made by <a href="http://github.com/dfcreative">Dmitry Ivanov</a>.
 TODO: placer and placee in different containers
 TODO: placee is outside the static body
 TODO: fixed/static placer/placee position
-TODO: relativeTo/within window
+TODO: to/within window
 TODO: browsers
 -->
 
@@ -793,13 +793,12 @@ TODO: browsers
 		}
 
 		var opts = {
-			relativeTo: relTo,
+			to: relTo,
 			side: $placee.getAttribute('side'),
 			avoid: $placee.getAttribute('avoid'),
 			align: $placee.getAttribute('align'),
 			within: within,
-			findBestSide: $placee.getAttribute('find-best-side') === 'false' ? false : true,
-			side: $placee.getAttribute('side')
+			auto: $placee.getAttribute('find-best-side') === 'false' ? false : true
 		};
 
 		place($placee, opts);

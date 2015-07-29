@@ -31,7 +31,7 @@ var win = window, doc = document, root = doc.documentElement;
 var defaults = {
 	//an element to align relatively to
 	//element
-	relativeTo: win,
+	to: win,
 
 	//which side to place element
 	//t/r/b/l, 'center', 'middle'
@@ -52,7 +52,7 @@ var defaults = {
 	within: undefined,
 
 	//look for better blacement, if doesn’t fit
-	findBestSide: true
+	auto: true
 };
 
 
@@ -74,8 +74,8 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	if (!options.relativeTo) {
-		options.relativeTo = q(options.relativeTo, element) || win;
+	if (!options.to) {
+		options.to = q(options.to, element) || win;
 	}
 	if (!options.within) {
 		options.within = q(options.within, element);
@@ -86,7 +86,7 @@ function place(element, options){
 
 
 	//set the same position as the target or absolute
-	if (options.relativeTo instanceof Element && isFixed(options.relativeTo)) {
+	if (options.to instanceof Element && isFixed(options.to)) {
 		element.style.position = 'fixed';
 	}
 	else {
@@ -95,7 +95,7 @@ function place(element, options){
 
 
 	//else place according to the position
-	var side = options.findBestSide && options.within ? getBestSide(element, options) : options.side;
+	var side = options.auto && options.within ? getBestSide(element, options) : options.side;
 
 	placeBySide[side](element, options);
 
@@ -115,8 +115,8 @@ var placeBySide = {
 	center: function(placee, opts){
 		// console.log('place center');
 
-		//get relativeTo & within rectangles
-		var placerRect = offsets(opts.relativeTo);
+		//get to & within rectangles
+		var placerRect = offsets(opts.to);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
@@ -131,7 +131,7 @@ var placeBySide = {
 			else al = [al, .5];
 		}
 
-		align([opts.relativeTo, placee], al);
+		align([opts.to, placee], al);
 
 
 		//apply limits
@@ -150,7 +150,7 @@ var placeBySide = {
 
 		var parent = placee.offsetParent;
 
-		var placerRect = offsets(opts.relativeTo);
+		var placerRect = offsets(opts.to);
 		var parentRect = getParentRect(parent);
 
 		//correct borders
@@ -164,7 +164,7 @@ var placeBySide = {
 		});
 
 		//place vertically properly
-		align([opts.relativeTo, placee], [null, opts.align]);
+		align([opts.to, placee], [null, opts.align]);
 
 
 		//apply limits
@@ -179,8 +179,8 @@ var placeBySide = {
 		// console.log('place right')
 
 
-		//get relativeTo & within rectangles
-		var placerRect = offsets(opts.relativeTo);
+		//get to & within rectangles
+		var placerRect = offsets(opts.to);
 		var parentRect = getParentRect(placee.offsetParent);
 
 		//correct borders
@@ -195,7 +195,7 @@ var placeBySide = {
 
 
 		//place vertically properly
-		align([opts.relativeTo, placee], [null, opts.align]);
+		align([opts.to, placee], [null, opts.align]);
 
 
 		//apply limits
@@ -210,7 +210,7 @@ var placeBySide = {
 		// console.log('place top');
 
 		var parent = placee.offsetParent;
-		var placerRect = offsets(opts.relativeTo);
+		var placerRect = offsets(opts.to);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
@@ -226,7 +226,7 @@ var placeBySide = {
 
 
 		//place horizontally properly
-		align([opts.relativeTo, placee], [opts.align]);
+		align([opts.to, placee], [opts.align]);
 
 
 		//apply limits
@@ -240,8 +240,8 @@ var placeBySide = {
 	bottom: function(placee, opts){
 		// console.log('place bottom');
 
-		//get relativeTo & within rectangles
-		var placerRect = offsets(opts.relativeTo);
+		//get to & within rectangles
+		var placerRect = offsets(opts.to);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
@@ -257,7 +257,7 @@ var placeBySide = {
 
 
 		//place horizontally properly
-		align([opts.relativeTo, placee], [opts.align]);
+		align([opts.to, placee], [opts.align]);
 
 
 		//apply limits
@@ -278,7 +278,7 @@ function getBestSide (placee, opts) {
 
 	var withinRect = offsets(opts.within),
 		placeeRect = offsets(placee),
-		placerRect = offsets(opts.relativeTo);
+		placerRect = offsets(opts.to);
 
 	contractRect(withinRect, borders(opts.within));
 
