@@ -30,7 +30,7 @@ var win = window, doc = document, root = doc.documentElement;
 var defaults = {
 	//an element to align relatively to
 	//element
-	to: win,
+	target: win,
 
 	//which side to place element
 	//t/r/b/l, 'center', 'middle'
@@ -70,11 +70,11 @@ function place(element, options){
 	options = softExtend(options, defaults);
 
 	//ensure elements
-	if (!options.to) {
-		options.to = win;
+	if (!options.target) {
+		options.target = win;
 	}
 	if (!options.within) {
-		options.within = root;
+		options.within = options.target === win ? win : root;
 	}
 
 	//TODO: query avoidables
@@ -82,12 +82,15 @@ function place(element, options){
 
 
 	//set the same position as the target or absolute
-	if (options.to instanceof Element && isFixed(options.to)) {
+	if (options.target instanceof Element && isFixed(options.target)) {
 		element.style.position = 'fixed';
 	}
 	else {
 		element.style.position = 'absolute';
 	}
+
+	//force placing into DOM
+	if (!document.contains(element)) (document.body || document.documentElement).appendChild(element);
 
 
 	//else place according to the position
@@ -109,12 +112,9 @@ function place(element, options){
  */
 var placeBySide = {
 	center: function(placee, opts){
-		// console.log('place center');
-
 		//get to & within rectangles
-		var placerRect = offsets(opts.to);
+		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(placee.offsetParent);
-
 
 		//align centered
 		var al = opts.align;
@@ -127,13 +127,13 @@ var placeBySide = {
 			else al = [al, .5];
 		}
 
-		align([opts.to, placee], al);
-
+		align([opts.target, placee], al);
 
 		//apply limits
+		//FIXME: with case of window this shits the bed
 		if (opts.within) {
-			trimPositionY(placee, opts.within, parentRect);
-			trimPositionX(placee, opts.within, parentRect);
+			trimPositionY(placee, opts, parentRect);
+			trimPositionX(placee, opts, parentRect);
 		}
 
 
@@ -142,11 +142,9 @@ var placeBySide = {
 	},
 
 	left: function(placee, opts){
-		// console.log('place left')
-
 		var parent = placee.offsetParent;
 
-		var placerRect = offsets(opts.to);
+		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(parent);
 
 		//correct borders
@@ -160,11 +158,11 @@ var placeBySide = {
 		});
 
 		//place vertically properly
-		align([opts.to, placee], [null, opts.align]);
+		align([opts.target, placee], [null, opts.align]);
 
 
 		//apply limits
-		if (opts.within) trimPositionY(placee, opts.within, parentRect);
+		if (opts.within) trimPositionY(placee, opts, parentRect);
 
 
 		//upd options
@@ -172,11 +170,8 @@ var placeBySide = {
 	},
 
 	right: function (placee, opts) {
-		// console.log('place right')
-
-
 		//get to & within rectangles
-		var placerRect = offsets(opts.to);
+		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(placee.offsetParent);
 
 		//correct borders
@@ -191,11 +186,11 @@ var placeBySide = {
 
 
 		//place vertically properly
-		align([opts.to, placee], [null, opts.align]);
+		align([opts.target, placee], [null, opts.align]);
 
 
 		//apply limits
-		if (opts.within) trimPositionY(placee, opts.within, parentRect);
+		if (opts.within) trimPositionY(placee, opts, parentRect);
 
 
 		//upd options
@@ -203,10 +198,8 @@ var placeBySide = {
 	},
 
 	top: function(placee, opts){
-		// console.log('place top');
-
 		var parent = placee.offsetParent;
-		var placerRect = offsets(opts.to);
+		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
@@ -222,11 +215,11 @@ var placeBySide = {
 
 
 		//place horizontally properly
-		align([opts.to, placee], [opts.align]);
+		align([opts.target, placee], [opts.align]);
 
 
 		//apply limits
-		if (opts.within) trimPositionX(placee, opts.within, parentRect);
+		if (opts.within) trimPositionX(placee, opts, parentRect);
 
 
 		//upd options
@@ -234,10 +227,8 @@ var placeBySide = {
 	},
 
 	bottom: function(placee, opts){
-		// console.log('place bottom');
-
 		//get to & within rectangles
-		var placerRect = offsets(opts.to);
+		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(placee.offsetParent);
 
 
@@ -253,11 +244,11 @@ var placeBySide = {
 
 
 		//place horizontally properly
-		align([opts.to, placee], [opts.align]);
+		align([opts.target, placee], [opts.align]);
 
 
 		//apply limits
-		if (opts.within) trimPositionX(placee, opts.within, parentRect);
+		if (opts.within) trimPositionX(placee, opts, parentRect);
 
 
 		//upd options
@@ -274,7 +265,7 @@ function getBestSide (placee, opts) {
 
 	var withinRect = offsets(opts.within),
 		placeeRect = offsets(placee),
-		placerRect = offsets(opts.to);
+		placerRect = offsets(opts.target);
 
 	contractRect(withinRect, borders(opts.within));
 
@@ -296,10 +287,7 @@ function getBestSide (placee, opts) {
 		right: hotRect.right - placeeRect.width - placeeMargins.left - placeeMargins.right
 	};
 
-	//TODO:
-	//if at least one avoidable el within the hot area
-	//get specific limits for the side (besides the `within` restrictor)
-	//and if limits are too tight, ignore the side
+	//TODO: if avoidable el is within the hot area - specify the side limits
 
 
 	//if fits initial side, return it
@@ -333,12 +321,20 @@ function contractRect(rect, rect2){
 
 
 /** apply limits rectangle to the position of an element */
-function trimPositionY(placee, within, parentRect){
+function trimPositionY(placee, opts, parentRect){
+	var within = opts.within;
+
 	var placeeRect = offsets(placee);
 	var withinRect = offsets(within);
 	var placeeMargins = margins(placee);
 
 	contractRect(withinRect, borders(within));
+
+	//shorten withinRect by the avoidable elements
+	//within the set of avoidable elements find the ones
+	if (opts.avoid) {
+
+	}
 
 	if (withinRect.top > placeeRect.top - placeeMargins.top) {
 		css(placee, {
@@ -354,7 +350,9 @@ function trimPositionY(placee, within, parentRect){
 		});
 	}
 }
-function trimPositionX(placee, within, parentRect){
+function trimPositionX(placee, opts, parentRect){
+	var within = opts.within;
+
 	var placeeRect = offsets(placee);
 	var withinRect = offsets(within);
 	var placeeMargins = margins(placee);

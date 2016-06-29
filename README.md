@@ -14,7 +14,7 @@ Place any two DOM elements in a way you like. Mainly needed for dropdowns, toolt
 var place = require('placer');
 
 place(element, {
-	to: otherElement,
+	target: otherElement,
 	side: 'top',
 	align: 'left',
 	within: '.holder'
@@ -25,7 +25,7 @@ place(element, {
 
 | Parameter | Default | Description |
 |----|:---:|:----:|----|
-| `to` | `window` | An area to align element relative to. |
+| `target` | `window` | An area to align element relative to. |
 | `side` | `undefined` | The side to place element: 'center', 'top', 'left', 'bottom', 'right'. |
 | `align` | `'left'` | Alignment, 0..1 or one of the sides keywords. |
 | `within` | `window` | Restriction area. |
