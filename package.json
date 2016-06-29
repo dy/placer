@@ -7,10 +7,6 @@
     "test:browser": "budo test.js",
     "watch": "watchify -r draggy -r queried -r resizable -r ./index.js:placer -d -o demo/bundle.js"
   },
-  "files": [
-    "dist",
-    "index.js"
-  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:dfcreative/placer.git"
