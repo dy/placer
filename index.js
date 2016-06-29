@@ -65,7 +65,7 @@ var defaults = {
  *
  * @return {boolean} The result of placement - whether placing succeeded
  */
-function place(element, options){
+function place (element, options) {
 	//inherit defaults
 	options = softExtend(options, defaults);
 
@@ -128,7 +128,6 @@ var placeBySide = {
 		align([opts.target, placee], al);
 
 		//apply limits
-		//FIXME: with case of window this shits the bed
 		if (opts.within) {
 			trimPositionY(placee, opts, parentRect);
 			trimPositionX(placee, opts, parentRect);
@@ -318,7 +317,7 @@ function contractRect(rect, rect2){
 }
 
 
-/** apply limits rectangle to the position of an element */
+/** Apply limits rectangle to the position of an element */
 function trimPositionY(placee, opts, parentRect){
 	var within = opts.within;
 
@@ -381,11 +380,11 @@ function trimPositionX(placee, opts, parentRect){
  *
  * @return {object} Offsets rectangle
  */
-function getParentRect(target){
+function getParentRect (target) {
 	var rect;
 
 	//handle special static body case
-	if (target === doc.body || target === root && getComputedStyle(target).position === 'static'){
+	if ((target === doc.body && getComputedStyle(target).position === 'static') || target === root) {
 		rect = {
 			left: 0,
 			right: win.innerWidth - (hasScroll.y() ? scrollbarWidth : 0),
