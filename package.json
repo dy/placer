@@ -40,6 +40,7 @@
   "devDependencies": {
     "draggy": "^1.6.3",
     "lifecycle-events": "^1.0.3",
+    "lorem-ipsum": "^1.0.3",
     "mocha": "^2.2.5",
     "queried": "^1.4.5",
     "resizable": "^1.1.3",
