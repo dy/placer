@@ -69,10 +69,8 @@ function place(element, options){
 	//inherit defaults
 	options = softExtend(options, defaults);
 
-	//ensure elements
-	if (!options.target) {
-		options.target = win;
-	}
+	options.target = options.target || options.to || win;
+
 	if (!options.within) {
 		options.within = options.target === win ? win : root;
 	}
