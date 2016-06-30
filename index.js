@@ -100,7 +100,6 @@ function place (element, options) {
 
 	//else place according to the position
 	var side = (options.auto || options.side === 'auto') ? getBestSide(element, options) : options.side;
-
 	placeBySide[side](element, options);
 
 
@@ -135,7 +134,8 @@ var placeBySide = {
 		align([opts.target, placee], al);
 
 		//apply limits
-		if (opts.within) {
+		//FIXME: understand this use-case when it should be called for centered view
+		if (opts.within && opts.within !== window) {
 			trimPositionY(placee, opts, parentRect);
 			trimPositionX(placee, opts, parentRect);
 		}
