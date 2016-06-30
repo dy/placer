@@ -3,7 +3,6 @@
 *
 * Places any element relative to any other element the way you define
 */
-module.exports = place;
 
 //TODO: use translate3d instead of absolute repositioning (option?)
 //TODO: implement avoiding strategy (graphic editors use-case when you need to avoid placing over selected elements)
@@ -19,10 +18,14 @@ var margins = require('mucss/margin');
 var softExtend = require('soft-extend');
 var align = require('aligner');
 
-
 //shortcuts
 var win = window, doc = document, root = doc.documentElement;
 
+
+module.exports = place;
+
+place.align = align;
+place.toFloat = align.toFloat;
 
 /**
  * Default options
