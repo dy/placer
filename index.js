@@ -95,7 +95,7 @@ function place (element, options) {
 
 
 	//else place according to the position
-	var side = options.auto && options.within ? getBestSide(element, options) : options.side;
+	var side = (options.auto || opts.side === 'auto') ? getBestSide(element, options) : options.side;
 
 	placeBySide[side](element, options);
 

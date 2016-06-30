@@ -26,7 +26,6 @@ place(element, {
 | Parameter | Default | Description |
 |----|:---:|:----:|----|
 | `target` | `window` | An area to align element relative to. |
-| `side` | `undefined` | The side to place element: 'center', 'top', 'left', 'bottom', 'right'. |
+| `side` | `undefined` | The side to place element: 'center', 'top', 'left', 'bottom', 'right' or 'auto'. |
 | `align` | `'left'` | Alignment, 0..1 or one of the sides keywords. |
 | `within` | `window` | Restriction area. |
-| `auto` | `true` | Find the most appropiate side for the placement. |
