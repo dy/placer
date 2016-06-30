@@ -37,7 +37,7 @@ var defaults = {
 
 	//which side to place element
 	//t/r/b/l, 'center', 'middle'
-	side: 'center',
+	side: 'auto',
 
 	/**
 	 * An alignment trbl/0..1/center
@@ -45,13 +45,13 @@ var defaults = {
 	 * @default  0
 	 * @type {(number|string|array)}
 	 */
-	align: 0,
+	align: 0.5,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
 	avoid: undefined,
 
 	//selector/nodelist/node/[x,y]/window/function(el)
-	within: undefined,
+	within: window,
 
 	//look for better blacement, if doesn’t fit
 	auto: true
@@ -95,7 +95,7 @@ function place (element, options) {
 
 
 	//else place according to the position
-	var side = (options.auto || opts.side === 'auto') ? getBestSide(element, options) : options.side;
+	var side = (options.auto || options.side === 'auto') ? getBestSide(element, options) : options.side;
 
 	placeBySide[side](element, options);
 

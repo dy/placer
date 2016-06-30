@@ -21,7 +21,7 @@ test('centered in window', function () {
 	});
 });
 
-test.only('restricted by window', function () {
+test('restricted by window', function () {
 	var el = document.createElement('div');
 	el.style.position = 'absolute';
 	el.style.width = '100px';
@@ -34,5 +34,18 @@ test.only('restricted by window', function () {
 		side: 'center',
 		align: 'center',
 		within: window
+	});
+});
+
+test('autoside', function () {
+	var el = document.createElement('div');
+	el.style.position = 'absolute';
+	el.style.width = '100px';
+	el.style.height = '100px';
+	el.style.border = '1px solid gray';
+	el.innerHTML = 'autoside';
+	el.style.background = 'white';
+
+	place(el, {
 	});
 });
