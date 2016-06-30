@@ -261,7 +261,7 @@ var placeBySide = {
  * Find the most appropriate side to place element
  */
 function getBestSide (placee, opts) {
-	var initSide = opts.side;
+	var initSide = opts.side === 'auto' ? 'bottom' : opts.side;
 
 	var withinRect = offsets(opts.within),
 		placeeRect = offsets(placee),
