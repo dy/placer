@@ -17,6 +17,7 @@ var borders = require('mucss/border');
 var margins = require('mucss/margin');
 var softExtend = require('soft-extend');
 var align = require('aligner');
+var parseValue = require('mucss/parse-value');
 
 //shortcuts
 var win = window, doc = document, root = doc.documentElement;
@@ -83,11 +84,14 @@ function place (element, options) {
 
 
 	//set the same position as the target or absolute
-	if (options.target instanceof Element && isFixed(options.target)) {
-		element.style.position = 'fixed';
-	}
-	else {
-		element.style.position = 'absolute';
+	var elStyle = getComputedStyle(element);
+	if (elStyle.position === 'static') {
+		if (options.target instanceof Element && isFixed(options.target)) {
+			element.style.position = 'fixed';
+		}
+		else {
+			element.style.position = 'absolute';
+		}
 	}
 
 	//force placing into DOM
@@ -142,7 +146,7 @@ var placeBySide = {
 	},
 
 	left: function(placee, opts){
-		var parent = placee.offsetParent;
+		var parent = placee.offsetParent || document.body || root;
 
 		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(parent);
@@ -198,10 +202,9 @@ var placeBySide = {
 	},
 
 	top: function(placee, opts){
-		var parent = placee.offsetParent;
+		var parent = placee.offsetParent || document.body || root;
 		var placerRect = offsets(opts.target);
 		var parentRect = getParentRect(placee.offsetParent);
-
 
 		//correct borders
 		contractRect(parentRect, borders(parent));
@@ -328,6 +331,11 @@ function trimPositionY(placee, opts, parentRect){
 	var withinRect = offsets(within);
 	var placeeMargins = margins(placee);
 
+	if (within === window && isFixed(placee)) {
+		withinRect.top = 0;
+		withinRect.left = 0;
+	}
+
 	contractRect(withinRect, borders(within));
 
 	//shorten withinRect by the avoidable elements
@@ -356,6 +364,11 @@ function trimPositionX(placee, opts, parentRect){
 	var placeeRect = offsets(placee);
 	var withinRect = offsets(within);
 	var placeeMargins = margins(placee);
+
+	if (within === window && isFixed(placee)) {
+		withinRect.top = 0;
+		withinRect.left = 0;
+	}
 
 	contractRect(withinRect, borders(within));
 
@@ -387,7 +400,7 @@ function getParentRect (target) {
 	var rect;
 
 	//handle special static body case
-	if ((target === doc.body && getComputedStyle(target).position === 'static') || target === root) {
+	if (target == null || target === window || (target === doc.body && getComputedStyle(target).position === 'static') || target === root) {
 		rect = {
 			left: 0,
 			right: win.innerWidth - (hasScroll.y() ? scrollbarWidth : 0),
