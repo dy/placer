@@ -29,3 +29,8 @@ place(element, {
 | `side` | `undefined` | The side to place element: 'center', 'top', 'left', 'bottom', 'right' or 'auto'. |
 | `align` | `'left'` | Alignment, 0..1 or one of the sides keywords. |
 | `within` | `window` | Restriction area. |
+
+## Related
+
+* [adjust](https://www.npmjs.com/package/adjust)
+* [tether](https://github.com/HubSpot/tether)
