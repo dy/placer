@@ -117,7 +117,7 @@ function place (element, options) {
 var placeBySide = {
 	center: function(placee, opts){
 		//get to & within rectangles
-		var placerRect = offsets(opts.target);
+		var targetRect = offsets(opts.target);
 		var parentRect = getParentRect(placee.offsetParent);
 
 		//align centered
@@ -148,7 +148,7 @@ var placeBySide = {
 	left: function(placee, opts){
 		var parent = placee.offsetParent || document.body || root;
 
-		var placerRect = offsets(opts.target);
+		var targetRect = offsets(opts.target);
 		var parentRect = getParentRect(parent);
 
 		//correct borders
@@ -157,7 +157,7 @@ var placeBySide = {
 
 		//place left (set css right because placee width may change)
 		css(placee, {
-			right: parentRect.right - placerRect.left,
+			right: parentRect.right - targetRect.left,
 			left: 'auto'
 		});
 
@@ -174,17 +174,19 @@ var placeBySide = {
 	},
 
 	right: function (placee, opts) {
+		var parent = placee.offsetParent || document.body || root;
+
 		//get to & within rectangles
-		var placerRect = offsets(opts.target);
-		var parentRect = getParentRect(placee.offsetParent);
+		var targetRect = offsets(opts.target);
+		var parentRect = getParentRect(parent);
 
 		//correct borders
-		contractRect(parentRect, borders(placee.offsetParent));
+		contractRect(parentRect, borders(parent));
 
 
 		//place right
 		css(placee, {
-			left: placerRect.right - parentRect.left,
+			left: targetRect.right - parentRect.left,
 			right: 'auto',
 		});
 
@@ -203,16 +205,23 @@ var placeBySide = {
 
 	top: function(placee, opts){
 		var parent = placee.offsetParent || document.body || root;
-		var placerRect = offsets(opts.target);
-		var parentRect = getParentRect(placee.offsetParent);
+
+		var targetRect = offsets(opts.target);
+		var parentRect = getParentRect(parent);
 
 		//correct borders
 		contractRect(parentRect, borders(parent));
 
+		if (isFixed(placee)) {
+			parentRect.top = 0;
+			parentRect.bottom = window.innerHeight;
+			targetRect.top -= window.pageYOffset;
+			targetRect.bottom -= window.pageYOffset;
+		}
 
 		//place vertically top-side
 		css(placee, {
-			bottom: parentRect.bottom - placerRect.top,
+			bottom: parentRect.bottom - targetRect.top,
 			top: 'auto'
 		});
 
@@ -230,18 +239,26 @@ var placeBySide = {
 	},
 
 	bottom: function(placee, opts){
+		var parent = placee.offsetParent || document.body || root;
+
 		//get to & within rectangles
-		var placerRect = offsets(opts.target);
-		var parentRect = getParentRect(placee.offsetParent);
+		var targetRect = offsets(opts.target);
+		var parentRect = getParentRect(parent);
 
 
 		//correct borders
-		contractRect(parentRect, borders(placee.offsetParent));
+		contractRect(parentRect, borders(parent));
 
+		if (isFixed(placee)) {
+			parentRect.top = 0;
+			parentRect.bottom = window.innerHeight;
+			targetRect.top -= window.pageYOffset;
+			targetRect.bottom -= window.pageYOffset;
+		}
 
 		//place bottom
 		css(placee, {
-			top: placerRect.bottom - parentRect.top,
+			top: targetRect.bottom - parentRect.top,
 			bottom: 'auto',
 		});
 
@@ -268,7 +285,7 @@ function getBestSide (placee, opts) {
 
 	var withinRect = offsets(opts.within),
 		placeeRect = offsets(placee),
-		placerRect = offsets(opts.target);
+		targetRect = offsets(opts.target);
 
 	contractRect(withinRect, borders(opts.within));
 
@@ -276,10 +293,10 @@ function getBestSide (placee, opts) {
 
 	//rect of "hot" area (available spaces from placer to container)
 	var hotRect = {
-		top: placerRect.top - withinRect.top,
-		bottom: withinRect.bottom - placerRect.bottom,
-		left: placerRect.left - withinRect.left,
-		right: withinRect.right - placerRect.right
+		top: targetRect.top - withinRect.top,
+		bottom: withinRect.bottom - targetRect.bottom,
+		left: targetRect.left - withinRect.left,
+		right: withinRect.right - targetRect.right
 	};
 
 	//rect of available spaces
@@ -400,7 +417,7 @@ function getParentRect (target) {
 	var rect;
 
 	//handle special static body case
-	if (target == null || target === window || (target === doc.body && getComputedStyle(target).position === 'static') || target === root) {
+	if (target == null || (target === window) || (target === doc.body && getComputedStyle(target).position === 'static') || target === root) {
 		rect = {
 			left: 0,
 			right: win.innerWidth - (hasScroll.y() ? scrollbarWidth : 0),
