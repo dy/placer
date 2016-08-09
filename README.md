@@ -34,3 +34,4 @@ place(element, {
 
 * [adjust](https://www.npmjs.com/package/adjust)
 * [tether](https://github.com/HubSpot/tether)
+* [positions](https://github.com/QubitProducts/positions)
