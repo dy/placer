@@ -1,8 +1,8 @@
-# Placer [![Code Climate](https://codeclimate.com/github/dfcreative/placer/badges/gpa.svg)](https://codeclimate.com/github/dfcreative/placer) [![Dependencies](https://david-dm.org/dfcreative/color-ranger.svg)](https://david-dm.org/dfcreative/color-ranger")
+# Placer 
 
 Place any two DOM elements in a way you like. Mainly needed for dropdowns, tooltips, modals, notifiers and any kind of overlays.
 
-[Demo & tests](https://dfcreative.github.io/placer)
+[Demo & tests](https://dy.github.io/placer)
 
 
 ## Usage
