@@ -24,14 +24,19 @@ place(element, {
 ## Options
 
 | Parameter | Default | Description |
-|----|:---:|:----:|----|
+|----|:---:|----|
 | `target` | `window` | An area to align element relative to. |
 | `side` | `undefined` | The side to place element: 'center', 'top', 'left', 'bottom', 'right' or 'auto'. |
 | `align` | `'left'` | Alignment, 0..1 or one of the sides keywords. |
 | `within` | `window` | Restriction area. |
 
-## Related
+## Alternatives
 
 * [adjust](https://www.npmjs.com/package/adjust)
 * [tether](https://github.com/HubSpot/tether)
 * [positions](https://github.com/QubitProducts/positions)
+* [positionining](https://github.com/mattlewis92/positioning#readme)
+* [popper](https://ghub.io/popper)
+* [satellite](https://github.com/jkroso/satellite)
+* [nanopop](https://github.com/Simonwep/nanopop)
+* [floating-ui](https://github.com/atomiks/floating-ui)
