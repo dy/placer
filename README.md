@@ -36,7 +36,7 @@ place(element, {
 * [tether](https://github.com/HubSpot/tether)
 * [positions](https://github.com/QubitProducts/positions)
 * [positionining](https://github.com/mattlewis92/positioning#readme)
-* [popper](https://ghub.io/popper)
+* [popper](https://popper.js.org/)
 * [satellite](https://github.com/jkroso/satellite)
 * [nanopop](https://github.com/Simonwep/nanopop)
 * [floating-ui](https://github.com/atomiks/floating-ui)
